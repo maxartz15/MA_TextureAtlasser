@@ -28,6 +28,9 @@ ExportedObj/
 *.pidb.meta
 *.pdb.meta
 
+# Unity3D meta files (not needed for the git)
+*.meta
+
 # Unity3D Generated File On Crash Reports
 sysinfo.txt
 
