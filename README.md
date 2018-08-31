@@ -6,4 +6,6 @@ By having full control over the size and position of the textures that are being
 
 https://youtu.be/PBRKlopkZP0
 
+Download the UnityPackage here: https://github.com/maxartz15/MA_TextureAtlasser/releases
+
 For more information: https://maxartz15.com/ma_textureatlas/
