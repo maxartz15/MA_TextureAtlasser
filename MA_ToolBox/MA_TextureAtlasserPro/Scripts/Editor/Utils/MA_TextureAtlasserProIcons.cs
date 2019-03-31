@@ -12,6 +12,7 @@ namespace MA_TextureAtlasserPro
 		public static GUIContent exportAtlasIcon;
 		public static GUIContent createQuadIcon;
 		public static GUIContent removeQuadIcon;
+		public static GUIContent duplicateQuadIcon;
 		public static GUIContent showTexturesOnIcon;
 		public static GUIContent showTexturesOffIcon;
 		public static GUIContent dragHandleIcon;
@@ -24,6 +25,7 @@ namespace MA_TextureAtlasserPro
 			exportAtlasIcon = new GUIContent("", (Texture)EditorGUIUtility.Load(LOADICONPATH + "exportAtlasIcon" + ".png"));
 			createQuadIcon = new GUIContent("", (Texture)EditorGUIUtility.Load(LOADICONPATH + "createQuadIcon" + ".png"));
 			removeQuadIcon = new GUIContent("", (Texture)EditorGUIUtility.Load(LOADICONPATH + "removeQuadIcon" + ".png"));
+			duplicateQuadIcon = new GUIContent("", (Texture)EditorGUIUtility.Load(LOADICONPATH + "duplicateQuadIcon" + ".png"));
 			showTexturesOnIcon = new GUIContent("", (Texture)EditorGUIUtility.Load(LOADICONPATH + "showTexturesOnIcon" + ".png"));
 			showTexturesOffIcon = new GUIContent("", (Texture)EditorGUIUtility.Load(LOADICONPATH + "showTexturesOffIcon" + ".png"));
 			dragHandleIcon = new GUIContent("", (Texture)EditorGUIUtility.Load(LOADICONPATH + "dragHandleIcon" + ".png"));

@@ -8,6 +8,7 @@ namespace MA_TextureAtlasserPro
     public class MA_TextureAtlasserProWindow : EditorWindow 
     {
         public static MA_TextureAtlasserProWindow thisWindow;
+		public MA_TextureAtlasserProSettings settings;
         public MA_TextureAtlasserProAtlas textureAtlas;
 
         public MA_TextureAtlasserProWorkView workView;
@@ -56,6 +57,7 @@ namespace MA_TextureAtlasserPro
 				GetCurrentWindow();
 			}
 
+			thisWindow.settings = MA_TextureAtlasserProUtils.LoadSettings();
 			thisWindow.workView = new MA_TextureAtlasserProWorkView(thisWindow, "workView");
 			thisWindow.menuView = new MA_TextureAtlasserProMenuView(thisWindow, "menuView");
 			thisWindow.inspectorView = new MA_TextureAtlasserProInspectorView(thisWindow, "inspectorView");
@@ -86,7 +88,7 @@ namespace MA_TextureAtlasserPro
 			}
 			
 			//Check views
-			if(workView == null || menuView == null || inspectorView == null || debugView == null)
+			if(settings == null || workView == null || menuView == null || inspectorView == null || debugView == null)
 			{
 				CreateViews();
 				return;

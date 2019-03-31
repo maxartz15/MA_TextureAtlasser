@@ -89,6 +89,31 @@ namespace MA_TextureAtlasserPro
 
                 e.Use();
             }
+
+			//Hotkeys.
+			if (curWindow.settings.useHotkeys)
+			{
+				if (e.type == EventType.KeyDown && e.keyCode == curWindow.settings.addQuadHotKey)
+				{
+					MA_TextureAtlasserProUtils.CreateTextureQuad(curWindow.textureAtlas, "new Quad", new Rect(0, 0, 128, 128), curWindow.settings.autoFocus);
+					e.Use();
+				}
+
+				if (curWindow.textureAtlas.selectedTextureQuad != null)
+				{
+					if (e.type == EventType.KeyDown && e.keyCode == curWindow.settings.removeQuadHotKey)
+					{
+						MA_TextureAtlasserProUtils.RemoveTextureQuad(curWindow.textureAtlas, curWindow.settings.autoFocus);
+						e.Use();
+					}
+
+					if (e.type == EventType.KeyDown && e.keyCode == curWindow.settings.duplicateHotKey)
+					{
+						MA_TextureAtlasserProUtils.DuplicateTextureQuad(curWindow.textureAtlas, curWindow.settings.autoFocus);
+						e.Use();
+					}
+				}
+			}
 		}
 
 		private Vector2 ConvertScreenCoordsToZoomCoords(Vector2 screenCoords)

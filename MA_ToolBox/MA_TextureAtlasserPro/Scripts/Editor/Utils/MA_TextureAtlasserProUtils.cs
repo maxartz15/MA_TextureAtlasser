@@ -9,11 +9,42 @@ namespace MA_TextureAtlasserPro
 {
 	public static class MA_TextureAtlasserProUtils
 	{
+		public const string SETTINGSASSETPATH = "Assets/MA_ToolBox/MA_TextureAtlasserPro/Settings/";
 		public const string SAVEASSETPATH = "Assets/MA_ToolBox/MA_TextureAtlasserPro/Atlasses/"; 
 		public const string LOADASSETPATH = "Assets/MA_ToolBox/MA_TextureAtlasserPro/Atlasses/";
 		public const string EXPORTASSETPATH = "Assets/MA_ToolBox/MA_TextureAtlasserPro/Exports/"; 
 		public const float VIEWOFFSET = 20;
 		public const string DEFAULTTEXTUREGROUPNAME = "Albedo";
+
+		public static MA_TextureAtlasserProSettings CreateSettings()
+		{
+			MA_TextureAtlasserProSettings _settings = (MA_TextureAtlasserProSettings)ScriptableObject.CreateInstance<MA_TextureAtlasserProSettings>();
+
+			if(_settings != null)
+			{
+				AssetDatabase.CreateAsset(_settings, SETTINGSASSETPATH + "MA_TextureAtlasserProSettings.asset");
+				AssetDatabase.SaveAssets();
+				AssetDatabase.Refresh();
+
+				return _settings;
+			}
+			else
+			{
+				return null;
+			}
+		}
+
+		public static MA_TextureAtlasserProSettings LoadSettings()
+		{
+			MA_TextureAtlasserProSettings _settings = AssetDatabase.LoadAssetAtPath(SETTINGSASSETPATH + "MA_TextureAtlasserProSettings.asset", typeof(MA_TextureAtlasserProSettings)) as MA_TextureAtlasserProSettings;
+
+			if (_settings == null)
+			{
+				_settings = CreateSettings();
+			}
+
+			return _settings;
+		}
 
 		public static MA_TextureAtlasserProAtlas CreateTextureAtlas(string name, Vector2 size)
 		{
@@ -113,7 +144,7 @@ namespace MA_TextureAtlasserPro
 			}
 		}
 
-		public static void CreateTextureQuad(MA_TextureAtlasserProAtlas atlas, string name, Rect rect)
+		public static void CreateTextureQuad(MA_TextureAtlasserProAtlas atlas, string name, Rect rect, bool focus = true)
 		{
 			if(atlas != null)
 			{
@@ -140,6 +171,11 @@ namespace MA_TextureAtlasserPro
 					AssetDatabase.AddObjectToAsset(_quad, atlas);
 					AssetDatabase.SaveAssets();
 					AssetDatabase.Refresh();
+
+					if(focus)
+					{
+						atlas.selectedTextureQuad = atlas.textureQuads[atlas.textureQuads.Count - 1];
+					}
 				}
 				else
 				{
@@ -152,14 +188,41 @@ namespace MA_TextureAtlasserPro
 			}
 		}
 
-		public static void RemoveTextureQuad(MA_TextureAtlasserProAtlas atlas)
+		public static void RemoveTextureQuad(MA_TextureAtlasserProAtlas atlas, bool focus = true)
 		{
 			if(atlas != null && atlas.selectedTextureQuad != null)
 			{
-				atlas.textureQuads.Remove(atlas.selectedTextureQuad);
+				int _index = atlas.textureQuads.IndexOf(atlas.selectedTextureQuad);
+
+				atlas.textureQuads.RemoveAt(_index);
 				GameObject.DestroyImmediate(atlas.selectedTextureQuad, true);
 				AssetDatabase.SaveAssets();
 				AssetDatabase.Refresh();
+
+				if (focus && atlas.textureQuads.Count > 0)
+				{
+					_index = Mathf.Clamp(_index, 0, atlas.textureQuads.Count - 1);
+					atlas.selectedTextureQuad = atlas.textureQuads[_index];
+				}
+			}
+		}
+
+		public static void DuplicateTextureQuad(MA_TextureAtlasserProAtlas atlas, bool focus = true, bool copyData = false, string namePrefix = "new ")
+		{
+			if(atlas != null && atlas.selectedTextureQuad != null)
+			{
+				CreateTextureQuad(atlas, namePrefix + atlas.selectedTextureQuad.name, atlas.selectedTextureQuad.rect);
+
+				if(copyData)
+				{
+					atlas.textureQuads[atlas.textureQuads.Count - 1].meshes = atlas.selectedTextureQuad.meshes;
+					atlas.textureQuads[atlas.textureQuads.Count - 1].textureGroups = atlas.selectedTextureQuad.textureGroups;
+				}
+
+				if(focus)
+				{
+					atlas.selectedTextureQuad = atlas.textureQuads[atlas.textureQuads.Count - 1];
+				}
 			}
 		}
 

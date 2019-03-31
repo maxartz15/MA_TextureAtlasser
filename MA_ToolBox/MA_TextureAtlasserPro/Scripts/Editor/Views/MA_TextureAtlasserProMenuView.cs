@@ -52,12 +52,17 @@ namespace MA_TextureAtlasserPro
 					GUILayout.Space(MA_TextureAtlasserProUtils.VIEWOFFSET);
 					if(GUILayout.Button(MA_TextureAtlasserProIcons.createQuadIcon, GUILayout.ExpandWidth(false), GUILayout.ExpandHeight(true)))
 					{
-						MA_TextureAtlasserProUtils.CreateTextureQuad(curWindow.textureAtlas, "new Quad", new Rect(0, 0, 128, 128));
+						MA_TextureAtlasserProUtils.CreateTextureQuad(curWindow.textureAtlas, "new Quad", new Rect(0, 0, 128, 128), curWindow.settings.autoFocus);
 					}
 					if(curWindow.textureAtlas.selectedTextureQuad != null && GUILayout.Button(MA_TextureAtlasserProIcons.removeQuadIcon, GUILayout.ExpandWidth(false), GUILayout.ExpandHeight(true)))
 					{
 						if(curWindow.textureAtlas.selectedTextureQuad != null)
-							MA_TextureAtlasserProUtils.RemoveTextureQuad(curWindow.textureAtlas);		
+							MA_TextureAtlasserProUtils.RemoveTextureQuad(curWindow.textureAtlas, curWindow.settings.autoFocus);		
+					}
+					if (curWindow.textureAtlas.selectedTextureQuad != null && GUILayout.Button(MA_TextureAtlasserProIcons.duplicateQuadIcon, GUILayout.ExpandWidth(false), GUILayout.ExpandHeight(true)))
+					{
+						if (curWindow.textureAtlas.selectedTextureQuad != null)
+							MA_TextureAtlasserProUtils.DuplicateTextureQuad(curWindow.textureAtlas, curWindow.settings.autoFocus, curWindow.settings.copySelectedQuadData, curWindow.settings.duplicatedQuadNamePrefix);
 					}
 				}
 
