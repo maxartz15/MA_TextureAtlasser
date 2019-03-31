@@ -211,7 +211,7 @@ namespace MA_TextureAtlasserPro
 		{
 			if(atlas != null && atlas.selectedTextureQuad != null)
 			{
-				CreateTextureQuad(atlas, namePrefix + atlas.selectedTextureQuad.name, atlas.selectedTextureQuad.rect);
+				CreateTextureQuad(atlas, namePrefix + atlas.selectedTextureQuad.name, atlas.selectedTextureQuad.rect, false);
 
 				if(copyData)
 				{

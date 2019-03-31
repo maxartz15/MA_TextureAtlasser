@@ -93,24 +93,27 @@ namespace MA_TextureAtlasserPro
 			//Hotkeys.
 			if (curWindow.settings.useHotkeys)
 			{
-				if (e.type == EventType.KeyDown && e.keyCode == curWindow.settings.addQuadHotKey)
+				if(curWindow.textureAtlas != null)
 				{
-					MA_TextureAtlasserProUtils.CreateTextureQuad(curWindow.textureAtlas, "new Quad", new Rect(0, 0, 128, 128), curWindow.settings.autoFocus);
-					e.Use();
-				}
-
-				if (curWindow.textureAtlas.selectedTextureQuad != null)
-				{
-					if (e.type == EventType.KeyDown && e.keyCode == curWindow.settings.removeQuadHotKey)
+					if (e.type == EventType.KeyDown && e.keyCode == curWindow.settings.addQuadHotKey)
 					{
-						MA_TextureAtlasserProUtils.RemoveTextureQuad(curWindow.textureAtlas, curWindow.settings.autoFocus);
+						MA_TextureAtlasserProUtils.CreateTextureQuad(curWindow.textureAtlas, "new Quad", new Rect(0, 0, 128, 128), curWindow.settings.autoFocus);
 						e.Use();
 					}
 
-					if (e.type == EventType.KeyDown && e.keyCode == curWindow.settings.duplicateHotKey)
+					if (curWindow.textureAtlas.selectedTextureQuad != null)
 					{
-						MA_TextureAtlasserProUtils.DuplicateTextureQuad(curWindow.textureAtlas, curWindow.settings.autoFocus);
-						e.Use();
+						if (e.type == EventType.KeyDown && e.keyCode == curWindow.settings.removeQuadHotKey)
+						{
+							MA_TextureAtlasserProUtils.RemoveTextureQuad(curWindow.textureAtlas, curWindow.settings.autoFocus);
+							e.Use();
+						}
+
+						if (e.type == EventType.KeyDown && e.keyCode == curWindow.settings.duplicateHotKey)
+						{
+							MA_TextureAtlasserProUtils.DuplicateTextureQuad(curWindow.textureAtlas, curWindow.settings.autoFocus, curWindow.settings.copySelectedQuadData, curWindow.settings.duplicatedQuadNamePrefix);
+							e.Use();
+						}
 					}
 				}
 			}
