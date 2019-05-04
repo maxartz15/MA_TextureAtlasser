@@ -1,6 +1,7 @@
 ﻿//Maxartz15
 //Version 1.0
 
+#if UNITY_EDITOR
 using UnityEngine;
 using MA_Editor;
 using MA_Editor.RectUtils;
@@ -37,3 +38,4 @@ namespace MA_Editor.GUILayoutZoom
 		}
 	}
 }
+#endif

@@ -3,6 +3,7 @@
 //Part of MA_TextureUtils
 //https://github.com/maxartz15/MA_TextureUtils
 
+#if UNITY_EDITOR
 using UnityEngine;
 using UnityEditor;
 using System.IO;
@@ -201,3 +202,4 @@ namespace MA_Texture
         #endregion
     }
 }
+#endif
