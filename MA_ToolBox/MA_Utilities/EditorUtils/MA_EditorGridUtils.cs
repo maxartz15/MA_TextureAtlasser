@@ -1,5 +1,4 @@
-﻿//Maxartz15
-//Version 1.0
+﻿//https://github.com/maxartz15/MA_EditorUtils
 
 #if UNITY_EDITOR
 using System.Collections;

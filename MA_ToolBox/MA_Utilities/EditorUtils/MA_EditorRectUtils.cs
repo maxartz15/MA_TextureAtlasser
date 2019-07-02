@@ -1,5 +1,7 @@
-﻿//Maxartz15
-//Version 1.0
+﻿//https://github.com/maxartz15/MA_EditorUtils
+
+//References:
+//http://martinecker.com/martincodes/unity-editor-window-zooming/
 
 #if UNITY_EDITOR
 using UnityEngine;

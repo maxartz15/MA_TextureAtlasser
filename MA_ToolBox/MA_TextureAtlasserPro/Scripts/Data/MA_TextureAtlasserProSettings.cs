@@ -11,7 +11,7 @@ namespace MA_TextureAtlasserPro
 	public class MA_TextureAtlasserProSettings : ScriptableObject
 	{
 		[Header("Selection")]
-		public bool autoFocus = true;
+		public bool autoFocus = false;
 
 		[Header("Duplication:")]
 		public bool copySelectedQuadData = false;

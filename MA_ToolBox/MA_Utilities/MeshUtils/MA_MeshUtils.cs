@@ -1,5 +1,7 @@
-﻿//Maxartz15
-//Version 1.0
+﻿//https://github.com/maxartz15/MA_MeshUtils
+
+//References:
+//http://wiki.unity3d.com/index.php?title=ObjExporter
 
 #if UNITY_EDITOR
 using System;
@@ -90,15 +92,15 @@ namespace MA_Mesh
 			{
 				if(flipY)
 				{
-					Debug.Log("01" + uvs[i].x);
+					//Debug.Log("01" + uvs[i].x);
 					uvs[i] = new Vector2((uvs[i].x / atlasSize.x * textureRect.width) + (1 / atlasSize.x * textureRect.x), (uvs[i].y / atlasSize.y * textureRect.height) + (1 / atlasSize.y * (atlasSize.y - textureRect.height - textureRect.y)));
-					Debug.Log("02" + uvs[i].x);
+					//Debug.Log("02" + uvs[i].x);
 				}
 				else
 				{			
-					Debug.Log("01" + uvs[i].x);
+					//Debug.Log("01" + uvs[i].x);
 					uvs[i] = new Vector2((uvs[i].x / atlasSize.x * textureRect.width) + (1 / atlasSize.x * textureRect.x), (uvs[i].y / atlasSize.y * textureRect.height) + (1 / atlasSize.y * textureRect.y));
-					Debug.Log("02" + uvs[i].x);
+					//Debug.Log("02" + uvs[i].x);
 				}
 			}
 

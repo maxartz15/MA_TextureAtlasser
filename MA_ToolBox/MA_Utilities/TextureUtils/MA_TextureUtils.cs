@@ -1,7 +1,10 @@
-﻿//Maxartz15
-//Version 1.0
-//Part of MA_TextureUtils
-//https://github.com/maxartz15/MA_TextureUtils
+﻿//https://github.com/maxartz15/MA_TextureUtils
+
+//References:
+//http://www.gamasutra.com/blogs/JoshSutphin/20131007/201829/Adding_to_Unitys_BuiltIn_Classes_Using_Extension_Methods.php
+//https://forum.unity3d.com/threads/contribution-texture2d-blur-in-c.185694/
+//http://orbcreation.com/orbcreation/page.orb?1180
+//https://support.unity3d.com/hc/en-us/articles/206486626-How-can-I-get-pixels-from-unreadable-textures-
 
 #if UNITY_EDITOR
 using UnityEngine;
@@ -10,19 +13,10 @@ using System.IO;
 using System.Collections;
 using System.Collections.Generic;
 
-//http://www.gamasutra.com/blogs/JoshSutphin/20131007/201829/Adding_to_Unitys_BuiltIn_Classes_Using_Extension_Methods.php
-//https://forum.unity3d.com/threads/contribution-texture2d-blur-in-c.185694/
-//http://orbcreation.com/orbcreation/page.orb?1180
-//https://support.unity3d.com/hc/en-us/articles/206486626-How-can-I-get-pixels-from-unreadable-textures-
-
 namespace MA_Texture
 {
     public static class MA_TextureUtils
     {
-        /// <summary>
-        /// Some base converters and texture settings setters.
-        /// </summary>
-
         public static Texture ConvertToReadableTexture(Texture texture)
         {
             if (texture == null)
