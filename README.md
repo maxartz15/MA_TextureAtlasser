@@ -1,3 +1,5 @@
+[![Github All Releases](https://img.shields.io/github/downloads/maxartz15/MA_TextureAtlasser/total.svg)]() 
+
 # MA_TextureAtlasser
 Texture atlas creator for Unity
 
