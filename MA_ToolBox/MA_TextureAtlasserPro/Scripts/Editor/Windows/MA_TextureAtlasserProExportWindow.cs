@@ -14,15 +14,20 @@ namespace MA_TextureAtlasserPro
 		public static MA_TextureAtlasserProWindow curWindow;
 
 		//Data
-		private static bool isLoaded = false;		//Make sure we wait a frame at the start to setup and don't draw.
+		private static bool isLoaded = false;       //Make sure we wait a frame at the start to setup and don't draw.
+
+		private bool exportObjDefault = false;
+		private bool exportPngDefault = false;
+		private bool exportSprite = false;
+		private bool exportSliceSprite = false;
 
 		[MenuItem("MA_ToolKit/MA_TextureAtlasserPro/Export Atlas")]	
 		private static void Init()
         {
 			GetCurrentWindow();
 
-			thisWindow.minSize = new Vector2(500,160);
-			thisWindow.maxSize = new Vector2(500,160);
+			thisWindow.minSize = new Vector2(420, 200);
+			thisWindow.maxSize = new Vector2(420, 200);
 
 			thisWindow.titleContent.text = "MA_ExportTextureAtlas";
 
@@ -35,8 +40,8 @@ namespace MA_TextureAtlasserPro
 
 			GetCurrentWindow();
 
-			thisWindow.minSize = new Vector2(500,160);
-			thisWindow.maxSize = new Vector2(500,160);
+			thisWindow.minSize = new Vector2(420, 200);
+			thisWindow.maxSize = new Vector2(420, 200);
 
 			thisWindow.titleContent.text = "MA_ExportTextureAtlas";
 
@@ -94,18 +99,68 @@ namespace MA_TextureAtlasserPro
 				
 				if(curWindow != null && curWindow.textureAtlas != null)
 				{
-					//Export options
-					GUILayout.Box("Note: No custom export options right now.. :<", EditorStyles.helpBox);
-
 					//Export
-					GUILayout.BeginVertical(EditorStyles.helpBox);
+					GUILayout.BeginVertical();
+					GUILayout.BeginHorizontal(EditorStyles.helpBox);
 
-					GUILayout.Label("Meshes: OBJ | Textures: PNG");
-					if(GUILayout.Button("Export Atlas", GUILayout.ExpandWidth(true), GUILayout.Height(37)))
+					if (GUILayout.Button("3D", GUILayout.ExpandWidth(false)))
 					{
-						MA_TextureAtlasserProUtils.ExportAtlas(curWindow.textureAtlas);
+						exportObjDefault = true;
+						exportPngDefault = true;
+						exportSprite = false;
+						exportSliceSprite = false;
 					}
 
+					if (GUILayout.Button("2D", GUILayout.ExpandWidth(false)))
+					{
+						exportObjDefault = false;
+						exportPngDefault = true;
+						exportSprite = true;
+						exportSliceSprite = true;
+					}
+
+					GUILayout.EndHorizontal();
+
+					GUILayout.Label("Meshes:");
+					exportObjDefault = GUILayout.Toggle(exportObjDefault, "OBJ default.");
+
+					GUILayout.Label("Textures:");
+					GUILayout.BeginHorizontal();
+					exportPngDefault = GUILayout.Toggle(exportPngDefault, "PNG default.");
+					if(exportPngDefault)
+					{
+						exportSprite = GUILayout.Toggle(exportSprite, "Sprite.");
+						if (exportSprite)
+						{
+							exportSliceSprite = GUILayout.Toggle(exportSliceSprite, "Slice sprites.");
+						}
+					}
+					GUILayout.FlexibleSpace();
+					GUILayout.EndHorizontal();
+
+					GUILayout.BeginHorizontal(EditorStyles.helpBox);
+
+					if (GUILayout.Button("Export", GUILayout.ExpandWidth(true), GUILayout.Height(37)))
+					{
+						if(exportObjDefault)
+						{
+							MA_TextureAtlasserProUtils.ExportAtlasMeshesObj(curWindow.textureAtlas);
+						}
+
+						if(exportPngDefault)
+						{
+							if(exportSprite)
+							{
+								MA_TextureAtlasserProUtils.ExportAtlasSpritesPNG(curWindow.textureAtlas, exportSliceSprite);
+							}
+							else
+							{
+								MA_TextureAtlasserProUtils.ExportAtlasTexturesPNG(curWindow.textureAtlas);
+							}
+						}
+					}
+
+					GUILayout.EndHorizontal();
 					GUILayout.EndVertical();
 				}
 				else if(curWindow == null)

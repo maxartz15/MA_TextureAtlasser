@@ -155,6 +155,30 @@ namespace MA_Texture
 
             return texture;
         }
+
+		public static Texture2D MA_Scale32D(this Texture2D texture, int width, int height)
+		{
+			float ratioWidth = (float)width / texture.width;
+			float ratioHeight = (float)height / texture.height;
+
+			Texture2D newTexture = new Texture2D(width, height);
+
+			for (int x = 0; x < width; x++)
+			{
+				int posX = Mathf.FloorToInt(x / ratioWidth);
+				for (int y = 0; y < height; y++)
+				{
+					int posY = Mathf.FloorToInt(y / ratioHeight);
+					Color pixel = texture.GetPixel(posX, posY);
+					newTexture.SetPixel(x, y, new Color(pixel.r, pixel.g, pixel.b, pixel.a));
+				}
+			}
+
+			newTexture.name = texture.name;
+
+			newTexture.Apply();
+			return newTexture;
+		}
         #endregion
 
         #region combine

@@ -363,7 +363,7 @@ namespace MA_TextureAtlasserPro
 							//Create new texture part
 							Texture2D newTexturePart = (Texture2D)MA_Texture.MA_TextureUtils.ConvertToReadableTexture(q.textureGroups[i].texture);
 							//Scale it
-							newTexturePart = newTexturePart.MA_Scale2D((int)q.guiRect.width, (int)q.guiRect.height);
+							newTexturePart = newTexturePart.MA_Scale32D((int)q.guiRect.width, (int)q.guiRect.height);
 							//Add it
 							newTexture = newTexture.MA_Combine2D(newTexturePart, (int)q.guiRect.x, (int)q.guiRect.y);
 						}
@@ -371,11 +371,78 @@ namespace MA_TextureAtlasserPro
 
 					//Save it
 					newTexture.MA_Save2D("MA_" + newTexture.name, savePath);
+
+					TextureImporter textureImporter = (TextureImporter)AssetImporter.GetAtPath(savePath + "MA_" + newTexture.name + ".png");
+					textureImporter.textureType = TextureImporterType.Default;
+					textureImporter.SaveAndReimport();
 				}
 
 				//Refresh
 				AssetDatabase.Refresh();
 			}
+		}
+
+		public static void ExportAtlasSpritesPNG(MA_TextureAtlasserProAtlas atlas, bool sliceSprites = true, string savePath = EXPORTASSETPATH)
+		{
+			if (atlas != null && atlas.textureQuads != null && atlas.textureGroupRegistration != null)
+			{
+				ExportAtlasTexturesPNG(atlas, savePath);
+
+				//Foreach texture group
+				for (int i = 0; i < atlas.textureGroupRegistration.Count; i++)
+				{
+					//Convert
+					string textureName = "MA_" + atlas.name + "_" + atlas.textureGroupRegistration[i].name + ".png";
+					TextureImporter textureImporter = (TextureImporter)AssetImporter.GetAtPath(savePath + textureName);
+					textureImporter.textureType = TextureImporterType.Sprite;
+					textureImporter.alphaIsTransparency = true;
+
+					//Slice sprites.
+					if (sliceSprites)
+					{
+						textureImporter.spriteImportMode = SpriteImportMode.None; //Reset it to update?
+						textureImporter.spriteImportMode = SpriteImportMode.Multiple;
+						List<SpriteMetaData> spriteMetaData = new List<SpriteMetaData>();
+
+						foreach (MA_TextureAtlasserProQuad q in atlas.textureQuads)
+						{
+							if (q.textureGroups != null && q.textureGroups[i].texture != null)
+							{
+								//Create new SpriteMetaData.
+								SpriteMetaData smd = new SpriteMetaData();
+
+								smd.name = q.name;
+								smd.rect = new Rect(q.guiRect.x, atlas.textureAtlasSize.y - q.guiRect.y - q.guiRect.height, q.guiRect.width, q.guiRect.height);
+
+								spriteMetaData.Add(smd);
+							}
+						}
+
+						textureImporter.spritesheet = spriteMetaData.ToArray();
+					}
+					else
+					{
+						textureImporter.spriteImportMode = SpriteImportMode.Single;
+					}
+
+
+					textureImporter.SaveAndReimport();
+				}
+
+				//Refresh
+				AssetDatabase.Refresh();
+			}
+		}
+
+		public static bool IsPowerOfTwo(int value)
+		{
+			//While x is even and > 1
+			while (((value % 2) == 0) && value > 1)
+			{
+				value /= 2;
+			}
+
+			return (value == 1);
 		}
 	}
 }

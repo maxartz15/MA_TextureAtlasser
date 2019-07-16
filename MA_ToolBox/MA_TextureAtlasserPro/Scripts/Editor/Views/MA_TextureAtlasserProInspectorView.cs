@@ -13,6 +13,8 @@ namespace MA_TextureAtlasserPro
 
 		private bool isEditing = false;
 
+		private GUIStyle labelStyle = new GUIStyle(GUI.skin.label);
+
 		public MA_TextureAtlasserProInspectorView(MA_TextureAtlasserProWindow currentEditorWindow, string title) : base(currentEditorWindow, title)
 		{
 			
@@ -115,8 +117,17 @@ namespace MA_TextureAtlasserPro
 					}
 
 					GUILayout.FlexibleSpace();
+					if(!MA_TextureAtlasserProUtils.IsPowerOfTwo((int)curWindow.textureAtlas.selectedTextureQuad.guiRect.width) || !MA_TextureAtlasserProUtils.IsPowerOfTwo((int)curWindow.textureAtlas.selectedTextureQuad.guiRect.height))
+					{
+						labelStyle.normal.textColor = Color.red;
+					}
+					else
+					{
+						labelStyle.normal.textColor = Color.black;
+					}
+
 					GUILayout.Label("x " + curWindow.textureAtlas.selectedTextureQuad.guiRect.x.ToString() + ", y " + curWindow.textureAtlas.selectedTextureQuad.guiRect.y.ToString());
-					GUILayout.Label("w " + curWindow.textureAtlas.selectedTextureQuad.guiRect.width.ToString() + ", h " + curWindow.textureAtlas.selectedTextureQuad.guiRect.height.ToString());
+					GUILayout.Label("w " + curWindow.textureAtlas.selectedTextureQuad.guiRect.width.ToString() + ", h " + curWindow.textureAtlas.selectedTextureQuad.guiRect.height.ToString(), labelStyle);
 
 					GUILayout.EndVertical();
 					GUILayout.EndArea();           
