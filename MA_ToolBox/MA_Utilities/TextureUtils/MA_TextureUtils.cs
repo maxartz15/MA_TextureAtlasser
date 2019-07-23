@@ -191,7 +191,7 @@ namespace MA_Texture
                     //Y is 'flipped' because textures are made from left to right, bottom to top. We want to draw from left to right and top to bottom.
                     for (int y = combineTexture.height; y > 0; y--)
                     {
-                        texture.SetPixel(x + offsetX, texture.height - y - offsetY, combineTexture.GetPixel(x, texture.height - y));
+                        texture.SetPixel(x + offsetX, y + (texture.height - offsetY - combineTexture.height), combineTexture.GetPixel(x, y));
                     }
                 }
                 else

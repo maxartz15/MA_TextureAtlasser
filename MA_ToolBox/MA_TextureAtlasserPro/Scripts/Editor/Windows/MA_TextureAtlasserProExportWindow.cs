@@ -7,8 +7,18 @@ using MA_Editor;
 
 namespace MA_TextureAtlasserPro
 {
-	public class MA_TextureAtlasserProExportWindow : EditorWindow 
+	public class MA_TextureAtlasserProExportWindow : EditorWindow
 	{
+		private const int WindowHeight = 215;
+		
+		private enum  ExportMode
+		{
+			None,
+			D3,
+			D2,
+			Meshes,
+		}
+		
 		//Editor
 		private static MA_TextureAtlasserProExportWindow thisWindow;
 		public static MA_TextureAtlasserProWindow curWindow;
@@ -16,7 +26,11 @@ namespace MA_TextureAtlasserPro
 		//Data
 		private static bool isLoaded = false;       //Make sure we wait a frame at the start to setup and don't draw.
 
+		private ExportMode _selectedExportMode;
+		private bool _showAdvancedEditor;
+		
 		private bool exportObjDefault = false;
+		private bool _replaceMeshes = false;
 		private bool exportPngDefault = false;
 		private bool exportSprite = false;
 		private bool exportSliceSprite = false;
@@ -26,8 +40,8 @@ namespace MA_TextureAtlasserPro
         {
 			GetCurrentWindow();
 
-			thisWindow.minSize = new Vector2(420, 200);
-			thisWindow.maxSize = new Vector2(420, 200);
+			thisWindow.minSize = new Vector2(420, WindowHeight);
+			thisWindow.maxSize = new Vector2(420, WindowHeight);
 
 			thisWindow.titleContent.text = "MA_ExportTextureAtlas";
 
@@ -40,8 +54,8 @@ namespace MA_TextureAtlasserPro
 
 			GetCurrentWindow();
 
-			thisWindow.minSize = new Vector2(420, 200);
-			thisWindow.maxSize = new Vector2(420, 200);
+			thisWindow.minSize = new Vector2(420, WindowHeight);
+			thisWindow.maxSize = new Vector2(420, WindowHeight);
 
 			thisWindow.titleContent.text = "MA_ExportTextureAtlas";
 
@@ -101,50 +115,23 @@ namespace MA_TextureAtlasserPro
 				{
 					//Export
 					GUILayout.BeginVertical();
-					GUILayout.BeginHorizontal(EditorStyles.helpBox);
 
-					if (GUILayout.Button("3D", GUILayout.ExpandWidth(false)))
-					{
-						exportObjDefault = true;
-						exportPngDefault = true;
-						exportSprite = false;
-						exportSliceSprite = false;
-					}
-
-					if (GUILayout.Button("2D", GUILayout.ExpandWidth(false)))
-					{
-						exportObjDefault = false;
-						exportPngDefault = true;
-						exportSprite = true;
-						exportSliceSprite = true;
-					}
-
-					GUILayout.EndHorizontal();
-
-					GUILayout.Label("Meshes:");
-					exportObjDefault = GUILayout.Toggle(exportObjDefault, "OBJ default.");
-
-					GUILayout.Label("Textures:");
-					GUILayout.BeginHorizontal();
-					exportPngDefault = GUILayout.Toggle(exportPngDefault, "PNG default.");
-					if(exportPngDefault)
-					{
-						exportSprite = GUILayout.Toggle(exportSprite, "Sprite.");
-						if (exportSprite)
-						{
-							exportSliceSprite = GUILayout.Toggle(exportSliceSprite, "Slice sprites.");
-						}
-					}
-					GUILayout.FlexibleSpace();
-					GUILayout.EndHorizontal();
+					DrawExportModeEditor();
+					DrawAdvancedEditor();
 
 					GUILayout.BeginHorizontal(EditorStyles.helpBox);
 
+					GUI.enabled = _selectedExportMode != ExportMode.None;
 					if (GUILayout.Button("Export", GUILayout.ExpandWidth(true), GUILayout.Height(37)))
 					{
 						if(exportObjDefault)
 						{
 							MA_TextureAtlasserProUtils.ExportAtlasMeshesObj(curWindow.textureAtlas);
+						}
+
+						if (_replaceMeshes)
+						{
+							
 						}
 
 						if(exportPngDefault)
@@ -160,6 +147,8 @@ namespace MA_TextureAtlasserPro
 						}
 					}
 
+					GUI.enabled = true;
+					
 					GUILayout.EndHorizontal();
 					GUILayout.EndVertical();
 				}
@@ -186,6 +175,79 @@ namespace MA_TextureAtlasserPro
 
 			if(e.type == EventType.Repaint)
 				isLoaded = true;
+		}
+
+		private void DrawExportModeEditor()
+		{
+			GUILayout.BeginHorizontal(EditorStyles.helpBox);
+			GUILayout.FlexibleSpace();
+			var value = GUILayout.Toggle(_selectedExportMode == ExportMode.D3, "3D", EditorStyles.miniButtonLeft, 
+				GUILayout.ExpandWidth(false));
+			if (value && _selectedExportMode != ExportMode.D3)
+			{
+				_selectedExportMode = ExportMode.D3;
+				exportObjDefault = true;
+				_replaceMeshes = false;
+				exportPngDefault = true;
+				exportSprite = false;
+				exportSliceSprite = false;
+			}
+			value = GUILayout.Toggle(_selectedExportMode == ExportMode.D2, "2D", EditorStyles.miniButtonMid, 
+				GUILayout.ExpandWidth(false));
+			if (value && _selectedExportMode != ExportMode.D2)
+			{
+				_selectedExportMode = ExportMode.D2;
+				exportObjDefault = false;
+				_replaceMeshes = false;
+				exportPngDefault = true;
+				exportSprite = true;
+				exportSliceSprite = true;
+			}
+			value = GUILayout.Toggle(_selectedExportMode == ExportMode.Meshes, "Replace source meshes", EditorStyles.miniButtonRight, 
+				GUILayout.ExpandWidth(false));
+			if (value && _selectedExportMode != ExportMode.Meshes)
+			{
+				_selectedExportMode = ExportMode.Meshes;
+				exportObjDefault = false;
+				_replaceMeshes = true;
+				exportPngDefault = true;
+				exportSprite = false;
+				exportSliceSprite = false;
+			}
+			GUILayout.FlexibleSpace();
+			GUILayout.EndHorizontal();
+		}
+
+		private void DrawAdvancedEditor()
+		{
+			EditorGUILayout.BeginVertical(EditorStyles.helpBox);
+			_showAdvancedEditor = EditorGUILayout.Foldout(_showAdvancedEditor, "Advanced editor");
+			if (!_showAdvancedEditor)
+			{
+				EditorGUILayout.EndVertical();	
+				return;
+			}
+
+			GUILayout.Label("Meshes:", EditorStyles.miniBoldLabel);
+			EditorGUILayout.BeginHorizontal();
+			exportObjDefault = GUILayout.Toggle(exportObjDefault, "OBJ default.");
+			_replaceMeshes = GUILayout.Toggle(_replaceMeshes, "Replace meshes");
+			EditorGUILayout.EndHorizontal();
+			
+			GUILayout.Label("Textures:", EditorStyles.miniBoldLabel);
+			GUILayout.BeginHorizontal();
+			exportPngDefault = GUILayout.Toggle(exportPngDefault, "PNG default.");
+			if(exportPngDefault)
+			{
+				exportSprite = GUILayout.Toggle(exportSprite, "Sprite.");
+				if (exportSprite)
+				{
+					exportSliceSprite = GUILayout.Toggle(exportSliceSprite, "Slice sprites.");
+				}
+			}
+			GUILayout.FlexibleSpace();
+			GUILayout.EndHorizontal();
+			EditorGUILayout.EndVertical();
 		}
 	}
 }

@@ -97,14 +97,14 @@ namespace MA_Mesh
 			{
 				if(flipY)
 				{
-					//Debug.Log("01" + uvs[i].x);
-					uvs[i] = new Vector2((uvs[i].x / atlasSize.x * textureRect.width) + (1 / atlasSize.x * textureRect.x), (uvs[i].y / atlasSize.y * textureRect.height) + (1 / atlasSize.y * (atlasSize.y - textureRect.height - textureRect.y)));
-					//Debug.Log("02" + uvs[i].x);
+					uvs[i] = new Vector2((uvs[i].x / atlasSize.x * textureRect.width) + (1 / atlasSize.x * textureRect.x), 
+						(uvs[i].y / atlasSize.y * textureRect.height) + (1 / atlasSize.y * (atlasSize.y - textureRect.height - textureRect.y)));
 				}
 				else
 				{			
 					//Debug.Log("01" + uvs[i].x);
-					uvs[i] = new Vector2((uvs[i].x / atlasSize.x * textureRect.width) + (1 / atlasSize.x * textureRect.x), (uvs[i].y / atlasSize.y * textureRect.height) + (1 / atlasSize.y * textureRect.y));
+					uvs[i] = new Vector2((uvs[i].x / atlasSize.x * textureRect.width) + (1 / atlasSize.x * textureRect.x), 
+						(uvs[i].y / atlasSize.y * textureRect.height) + (1 / atlasSize.y * textureRect.y));
 					//Debug.Log("02" + uvs[i].x);
 				}
 			}
@@ -181,7 +181,6 @@ namespace MA_Mesh
 			using (StreamWriter sw = new StreamWriter(savePath + filename + ".obj")) 
 			{
 				sw.Write(MeshToString(mesh));
-				Debug.Log(savePath + filename);
 			}			
 		}
 		//End
