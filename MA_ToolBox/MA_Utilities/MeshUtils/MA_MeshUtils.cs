@@ -9,6 +9,7 @@ using System.IO;
 using System.Text;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEditor;
 
@@ -39,12 +40,16 @@ namespace MA_Mesh
 		public static Mesh MA_DuplicateMesh(Mesh mesh)
 		{
 			Mesh newMesh = new Mesh();
-
+			newMesh.name = mesh.name;
 			newMesh.SetVertices(new List<Vector3>(mesh.vertices));
+			newMesh.bounds = mesh.bounds;
+			newMesh.colors = mesh.colors.ToArray();
+			newMesh.subMeshCount = mesh.subMeshCount;
 			for (int i = 0; i < mesh.subMeshCount; i++)
 			{
 				newMesh.SetTriangles(mesh.GetTriangles(i), i);
 			}
+			newMesh.subMeshCount = mesh.subMeshCount;
 			newMesh.SetNormals(new List<Vector3>(mesh.normals));
 			newMesh.SetUVs(0, new List<Vector2>(mesh.uv));
 			newMesh.SetTangents(new List<Vector4>(mesh.tangents));
