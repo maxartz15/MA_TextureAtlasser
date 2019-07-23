@@ -53,7 +53,7 @@ namespace MA_TextureAtlasserPro
 
 			GUILayout.BeginHorizontal();
 			GUILayout.FlexibleSpace();
-			GUILayout.Label(this.name);		
+			GUILayout.Label(this.name, EditorStyles.helpBox);		
 			GUILayout.FlexibleSpace();
 			GUILayout.EndHorizontal();
 
