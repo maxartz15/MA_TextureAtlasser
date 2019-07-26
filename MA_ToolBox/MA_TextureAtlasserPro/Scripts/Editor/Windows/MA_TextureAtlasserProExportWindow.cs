@@ -130,9 +130,7 @@ namespace MA_TextureAtlasserPro
 						}
 
 						if (_replaceMeshes)
-						{
-							
-						}
+							MA_TextureAtlasserProUtils.ModifyMeshes(curWindow.textureAtlas);
 
 						if(exportPngDefault)
 						{

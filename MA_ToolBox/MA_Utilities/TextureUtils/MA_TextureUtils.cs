@@ -44,6 +44,7 @@ namespace MA_Texture
             // Copy the pixels from the RenderTexture to the new Texture
             myTexture2D.ReadPixels(new Rect(0, 0, tmp.width, tmp.height), 0, 0);
             myTexture2D.Apply();
+            myTexture2D.name = texture.name;
 
             // Reset the active RenderTexture
             RenderTexture.active = previous;
@@ -174,11 +175,18 @@ namespace MA_Texture
 				}
 			}
 
-			newTexture.name = texture.name;
+                newTexture.name = texture.name;
 
 			newTexture.Apply();
 			return newTexture;
 		}
+
+        public static Texture2D ScaleTexture(this Texture2D texture, int width, int height, bool bilinear)
+        {
+            TextureScaler.Scale(texture, width, height, bilinear);
+            return texture;
+        }
+        
         #endregion
 
         #region combine
