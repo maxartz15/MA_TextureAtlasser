@@ -4,21 +4,14 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
 using MA_Editor;
+using MA_Texture;
 
 namespace MA_TextureAtlasserPro
 {
 	public class MA_TextureAtlasserProExportWindow : EditorWindow
 	{
-		private const int WindowHeight = 215;
-		
-		private enum  ExportMode
-		{
-			None,
-			D3,
-			D2,
-			Meshes,
-		}
-		
+		private const int WindowHeight = 235;
+
 		//Editor
 		private static MA_TextureAtlasserProExportWindow thisWindow;
 		public static MA_TextureAtlasserProWindow curWindow;
@@ -26,14 +19,12 @@ namespace MA_TextureAtlasserPro
 		//Data
 		private static bool isLoaded = false;       //Make sure we wait a frame at the start to setup and don't draw.
 
-		private ExportMode _selectedExportMode;
-		private bool _showAdvancedEditor;
-		
-		private bool exportObjDefault = false;
-		private bool _replaceMeshes = false;
-		private bool exportPngDefault = false;
-		private bool exportSprite = false;
-		private bool exportSliceSprite = false;
+		//Export settings.
+		private ExportPreset exportPreset = ExportPreset.Default;
+		private ModelFormat modelFormat = ModelFormat.Obj;
+		private TextureFormat textureFormat = TextureFormat.Png;
+		private TextureType textureType = TextureType.Default;
+		private MA_TextureUtils.TextureScaleMode textureScaleMode = MA_TextureUtils.TextureScaleMode.Bilinear;
 
 		[MenuItem("MA_ToolKit/MA_TextureAtlasserPro/Export Atlas")]	
 		private static void Init()
@@ -116,36 +107,42 @@ namespace MA_TextureAtlasserPro
 					//Export
 					GUILayout.BeginVertical();
 
-					DrawExportModeEditor();
-					DrawAdvancedEditor();
+					DrawExportPresetMenu();
+					DrawExportAdvancedOptions();
 
 					GUILayout.BeginHorizontal(EditorStyles.helpBox);
 
-					GUI.enabled = _selectedExportMode != ExportMode.None;
-					if (GUILayout.Button("Export", GUILayout.ExpandWidth(true), GUILayout.Height(37)))
+					switch (exportPreset)
 					{
-						if(exportObjDefault)
-						{
-							MA_TextureAtlasserProUtils.ExportAtlasMeshesObj(curWindow.textureAtlas);
-						}
-
-						if (_replaceMeshes)
-							MA_TextureAtlasserProUtils.ModifyMeshes(curWindow.textureAtlas);
-
-						if(exportPngDefault)
-						{
-							if(exportSprite)
-							{
-								MA_TextureAtlasserProUtils.ExportAtlasSpritesPNG(curWindow.textureAtlas, exportSliceSprite);
-							}
-							else
-							{
-								MA_TextureAtlasserProUtils.ExportAtlasTexturesPNG(curWindow.textureAtlas);
-							}
-						}
+						case ExportPreset.Custom:
+							break;
+						case ExportPreset.Default:
+							modelFormat = ModelFormat.Obj;
+							textureFormat = TextureFormat.Png;
+							textureType = TextureType.Default;
+							textureScaleMode = MA_TextureUtils.TextureScaleMode.Bilinear;
+							break;
+						case ExportPreset.Sprites:
+							modelFormat = ModelFormat.None;
+							textureFormat = TextureFormat.Png;
+							textureType = TextureType.SpriteSliced;
+							textureScaleMode = MA_TextureUtils.TextureScaleMode.Bilinear;
+							break;
+						case ExportPreset.ReplaceObjMeshes:
+							modelFormat = ModelFormat.ReplaceObj;
+							textureFormat = TextureFormat.Png;
+							textureType = TextureType.Default;
+							textureScaleMode = MA_TextureUtils.TextureScaleMode.Bilinear;
+							break;
+						default:
+							break;
 					}
 
-					GUI.enabled = true;
+					if (GUILayout.Button("Export", GUILayout.ExpandWidth(true), GUILayout.Height(37)))
+					{
+						MA_TextureAtlasserProUtils.ExportAtlasModels(curWindow.textureAtlas, modelFormat);
+						MA_TextureAtlasserProUtils.ExportAtlasTextures(curWindow.textureAtlas, textureFormat, textureType, textureScaleMode);
+					}
 					
 					GUILayout.EndHorizontal();
 					GUILayout.EndVertical();
@@ -175,77 +172,41 @@ namespace MA_TextureAtlasserPro
 				isLoaded = true;
 		}
 
-		private void DrawExportModeEditor()
+		private void DrawExportPresetMenu()
 		{
 			GUILayout.BeginHorizontal(EditorStyles.helpBox);
-			GUILayout.FlexibleSpace();
-			var value = GUILayout.Toggle(_selectedExportMode == ExportMode.D3, "3D", EditorStyles.miniButtonLeft, 
-				GUILayout.ExpandWidth(false));
-			if (value && _selectedExportMode != ExportMode.D3)
-			{
-				_selectedExportMode = ExportMode.D3;
-				exportObjDefault = true;
-				_replaceMeshes = false;
-				exportPngDefault = true;
-				exportSprite = false;
-				exportSliceSprite = false;
-			}
-			value = GUILayout.Toggle(_selectedExportMode == ExportMode.D2, "2D", EditorStyles.miniButtonMid, 
-				GUILayout.ExpandWidth(false));
-			if (value && _selectedExportMode != ExportMode.D2)
-			{
-				_selectedExportMode = ExportMode.D2;
-				exportObjDefault = false;
-				_replaceMeshes = false;
-				exportPngDefault = true;
-				exportSprite = true;
-				exportSliceSprite = true;
-			}
-			value = GUILayout.Toggle(_selectedExportMode == ExportMode.Meshes, "Replace source meshes", EditorStyles.miniButtonRight, 
-				GUILayout.ExpandWidth(false));
-			if (value && _selectedExportMode != ExportMode.Meshes)
-			{
-				_selectedExportMode = ExportMode.Meshes;
-				exportObjDefault = false;
-				_replaceMeshes = true;
-				exportPngDefault = true;
-				exportSprite = false;
-				exportSliceSprite = false;
-			}
-			GUILayout.FlexibleSpace();
+
+			exportPreset = (ExportPreset)EditorGUILayout.EnumPopup("ExportPreset:", exportPreset, GUILayout.ExpandWidth(true));
+
 			GUILayout.EndHorizontal();
 		}
 
-		private void DrawAdvancedEditor()
+		private void DrawExportAdvancedOptions()
 		{
-			EditorGUILayout.BeginVertical(EditorStyles.helpBox);
-			_showAdvancedEditor = EditorGUILayout.Foldout(_showAdvancedEditor, "Advanced editor");
-			if (!_showAdvancedEditor)
+			bool wasEnabled = GUI.enabled;
+
+			if(exportPreset == ExportPreset.Custom)
 			{
-				EditorGUILayout.EndVertical();	
-				return;
+				GUI.enabled = true;
+			}
+			else
+			{
+				GUI.enabled = false;
 			}
 
-			GUILayout.Label("Meshes:", EditorStyles.miniBoldLabel);
-			EditorGUILayout.BeginHorizontal();
-			exportObjDefault = GUILayout.Toggle(exportObjDefault, "OBJ default.");
-			_replaceMeshes = GUILayout.Toggle(_replaceMeshes, "Replace meshes");
-			EditorGUILayout.EndHorizontal();
-			
+			EditorGUILayout.BeginVertical(EditorStyles.helpBox);
+
+			GUILayout.Label("Models:", EditorStyles.miniBoldLabel);
+			modelFormat = (ModelFormat)EditorGUILayout.EnumPopup("ModelFormat:", modelFormat);
+
 			GUILayout.Label("Textures:", EditorStyles.miniBoldLabel);
-			GUILayout.BeginHorizontal();
-			exportPngDefault = GUILayout.Toggle(exportPngDefault, "PNG default.");
-			if(exportPngDefault)
-			{
-				exportSprite = GUILayout.Toggle(exportSprite, "Sprite.");
-				if (exportSprite)
-				{
-					exportSliceSprite = GUILayout.Toggle(exportSliceSprite, "Slice sprites.");
-				}
-			}
-			GUILayout.FlexibleSpace();
-			GUILayout.EndHorizontal();
+			textureFormat = (TextureFormat)EditorGUILayout.EnumPopup("TextureFormat:", textureFormat);
+			textureType = (TextureType)EditorGUILayout.EnumPopup("TextureType:", textureType);
+			textureScaleMode = (MA_TextureUtils.TextureScaleMode)EditorGUILayout.EnumPopup("TextureScaleMode:", textureScaleMode);
+
 			EditorGUILayout.EndVertical();
+
+			GUI.enabled = wasEnabled;
 		}
 	}
 }

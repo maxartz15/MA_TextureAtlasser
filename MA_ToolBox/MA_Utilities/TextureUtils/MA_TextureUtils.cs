@@ -5,6 +5,7 @@
 //https://forum.unity3d.com/threads/contribution-texture2d-blur-in-c.185694/
 //http://orbcreation.com/orbcreation/page.orb?1180
 //https://support.unity3d.com/hc/en-us/articles/206486626-How-can-I-get-pixels-from-unreadable-textures-
+//https://github.com/maxartz15/MA_TextureAtlasser/commit/9f5240967a51692fa2a17a6b3c8d124dd5dc60f9
 
 #if UNITY_EDITOR
 using UnityEngine;
@@ -12,6 +13,7 @@ using UnityEditor;
 using System.IO;
 using System.Collections;
 using System.Collections.Generic;
+using System;
 
 namespace MA_Texture
 {
@@ -69,8 +71,6 @@ namespace MA_Texture
             bw.Close();
             fs.Close();
 
-            Debug.Log("Saved texture: " + texture.name);
-
             AssetDatabase.Refresh();
 
             return texture;
@@ -86,111 +86,110 @@ namespace MA_Texture
 
             return texture;
         }
-        #endregion
+		#endregion
 
-        #region Scale
-        public static Texture2D MA_Scale2D(this Texture2D texture, int newWidth, int newHeight)
-        {
-            Texture2D texture2D = new Texture2D(newWidth, newHeight);
-            float ratioWidth = texture.width / newWidth;
-            float ratioHeight = texture.height / newHeight;
-
-            for (int x = 0; x < texture.width; x++)
-            {
-                for (int y = 0; y < texture.height; y++)
-                {
-                    Color pixel = texture.GetPixel(x, y);
-                    int posX = Mathf.FloorToInt(x / ratioWidth);
-                    int posY = Mathf.FloorToInt(y / ratioHeight);
-                    texture2D.SetPixel(posX, posY, new Color(pixel.r, pixel.g, pixel.b, pixel.a));
-                }
-            }
-            texture2D.Apply();
-
-            return texture2D;
-        }
-
-        public static Texture MA_Scale(this Texture texture, int newWidth, int newHeight)
-        {
-            Texture2D texture2D = (Texture2D)MA_TextureUtils.ConvertToReadableTexture(texture);
-
-            texture2D.MA_Scale2D(newWidth, newHeight);
-
-            texture = texture2D;
-
-            return texture;
-        }
-
-        public static Texture2D MA_Scale22D(this Texture2D texture, float width, float height)
-        {
-            float ratioWidth = width / texture.width;
-            float ratioHeight = height / texture.height;
-
-            int newWidth = Mathf.RoundToInt(texture.width * ratioWidth);
-            int newHeight = Mathf.RoundToInt(texture.height * ratioHeight);
-
-            Texture2D newTexture = new Texture2D(newWidth, newHeight);
-
-            for (int x = 0; x < texture.width; x++)
-            {
-                for (int y = 0; y < texture.height; y++)
-                {
-                    Color pixel = texture.GetPixel(x, y);
-                    int posX = Mathf.RoundToInt(x * ratioWidth);
-                    int posY = Mathf.RoundToInt(y * ratioHeight);
-                    newTexture.SetPixel(posX, posY, new Color(pixel.r, pixel.g, pixel.b, pixel.a));
-                }
-            }
-
-            newTexture.name = texture.name;
-
-            newTexture.Apply();
-            return newTexture;
-        }
-
-        public static Texture MA_Scale2(this Texture texture, float newWidth, float newHeight)
-        {
-            Texture2D texture2D = (Texture2D)MA_TextureUtils.ConvertToReadableTexture(texture);
-
-            texture = texture2D.MA_Scale22D(newWidth, newHeight);
-
-            return texture;
-        }
-
-		public static Texture2D MA_Scale32D(this Texture2D texture, int width, int height)
+		#region Scale
+		public enum TextureScaleMode
 		{
-			float ratioWidth = (float)width / texture.width;
-			float ratioHeight = (float)height / texture.height;
+			Bilinear,
+			Point
+		}
 
-			Texture2D newTexture = new Texture2D(width, height);
+        public static Texture MA_Scale(this Texture texture, int width, int height, TextureScaleMode scaleMode)
+        {
+			Texture2D texture2D = (Texture2D)MA_TextureUtils.ConvertToReadableTexture(texture);
 
-			for (int x = 0; x < width; x++)
+			texture2D.MA_Scale2D(width, height, scaleMode);
+
+			texture = texture2D;
+
+            return texture;
+        }
+
+		public static Texture2D MA_Scale2D(this Texture2D texture, int newWidth, int newHeight, TextureScaleMode scaleMode)
+		{
+			Color[] curColors = texture.GetPixels();
+			Color[] newColors = new Color[newWidth * newHeight];
+
+			switch (scaleMode)
 			{
-				int posX = Mathf.FloorToInt(x / ratioWidth);
-				for (int y = 0; y < height; y++)
+				case TextureScaleMode.Bilinear:
+					newColors = MA_BilinearScale(curColors, texture.width, texture.height, newWidth, newHeight);
+					break;
+				case TextureScaleMode.Point:
+					newColors = MA_PointScale(curColors, texture.width, texture.height, newWidth, newHeight);
+					break;
+
+			}
+
+			texture.Resize(newWidth, newHeight);
+			texture.SetPixels(newColors);
+			texture.Apply();
+
+			return texture;
+		}
+
+		private static Color[] MA_BilinearScale(Color[] curColors, int curWidth, int curHeight, int newWidth, int newHeight)
+		{
+			Color[] newColors = new Color[newWidth * newHeight];
+
+			float ratioX = 1.0f / ((float)newWidth / (curWidth - 1));
+			float ratioY = 1.0f / ((float)newHeight / (curHeight - 1));
+
+			for (int y = 0; y < newHeight; y++)
+			{
+				int yFloor = Mathf.FloorToInt(y * ratioY);
+				var y1 = yFloor * curWidth;
+				var y2 = (yFloor + 1) * curWidth;
+				var yw = y * newWidth;
+
+				for (int x = 0; x < newWidth; x++)
 				{
-					int posY = Mathf.FloorToInt(y / ratioHeight);
-					Color pixel = texture.GetPixel(posX, posY);
-					newTexture.SetPixel(x, y, new Color(pixel.r, pixel.g, pixel.b, pixel.a));
+					int xFloor = Mathf.FloorToInt(x * ratioX);
+					var xLerp = x * ratioX - xFloor;
+
+					newColors[yw + x] = ColorLerpUnclamped(ColorLerpUnclamped(curColors[y1 + xFloor], curColors[y1 + xFloor + 1], xLerp),
+														ColorLerpUnclamped(curColors[y2 + xFloor], curColors[y2 + xFloor + 1], xLerp),
+														y * ratioY - yFloor);
 				}
 			}
 
-                newTexture.name = texture.name;
-
-			newTexture.Apply();
-			return newTexture;
+			return newColors;
 		}
 
-        public static Texture2D ScaleTexture(this Texture2D texture, int width, int height, bool bilinear)
-        {
-            TextureScaler.Scale(texture, width, height, bilinear);
-            return texture;
-        }
-        
-        #endregion
+		private static Color[] MA_PointScale(Color[] curColors, int curWidth, int curHeight, int newWidth, int newHeight)
+		{
+			Color[] newColors = new Color[newWidth * newHeight];
 
-        #region combine
-        public static Texture2D MA_Combine2D(this Texture2D texture, Texture2D combineTexture, int offsetX, int offsetY, bool flipY = true)
+			float ratioX = ((float)curWidth) / newWidth;
+			float ratioY = ((float)curHeight) / newHeight;
+
+			for (int y = 0; y < newHeight; y++)
+			{
+				var thisY = Mathf.RoundToInt((ratioY * y) * curWidth);
+				var yw = y * newWidth;
+
+				for (int x = 0; x < newWidth; x++)
+				{
+					newColors[yw + x] = curColors[Mathf.RoundToInt(thisY + ratioX * x)];
+				}
+			}
+
+			return newColors;
+		}
+
+		private static Color ColorLerpUnclamped(Color c1, Color c2, float value)
+		{
+			return new Color(c1.r + (c2.r - c1.r) * value,
+							  c1.g + (c2.g - c1.g) * value,
+							  c1.b + (c2.b - c1.b) * value,
+							  c1.a + (c2.a - c1.a) * value);
+		}
+
+		#endregion
+
+		#region combine
+		public static Texture2D MA_Combine2D(this Texture2D texture, Texture2D combineTexture, int offsetX, int offsetY, bool flipY = true)
         {
             for (int x = 0; x < combineTexture.width; x++)
             {

@@ -36,7 +36,8 @@ namespace MA_TextureAtlasserPro
 			editorWorkRect = new Rect(Vector2.zero - zoomCoordsOrigin, textureAtlasSize);
 
 			GUI.backgroundColor = new Color(0, 0, 0, 0.1f);
-			GUI.Box(editorWorkRect, this.name);
+			GUI.Box(editorWorkRect, "");
+			GUI.Box(new Rect(editorWorkRect.x, editorWorkRect.y - 25, editorWorkRect.width, 20), this.name);
 			GUI.backgroundColor = Color.white;
 
 			MA_Editor.Grid.Grid.DrawZoomableGrid(editorWorkRect, 64, new Color(0, 0, 0, 0.1f), zoomCoordsOrigin);

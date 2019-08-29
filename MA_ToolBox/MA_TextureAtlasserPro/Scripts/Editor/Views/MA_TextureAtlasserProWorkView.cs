@@ -19,7 +19,7 @@ namespace MA_TextureAtlasserPro
         private const float kZoomMax = 2.0f;
 		private Rect zoomArea;
 		private float zoom = 1.0f;
-        public float Zoom { get { return zoom; } }
+        public float Zoom { get { return zoom; } set { zoom = Mathf.Clamp(value, kZoomMin, kZoomMax); } }
         private Vector2 zoomCoordsOrigin = Vector2.zero;
 
 		public override void UpdateView(Event e, Rect editorViewRect)
@@ -96,21 +96,32 @@ namespace MA_TextureAtlasserPro
 			{
 				if(curWindow.textureAtlas != null)
 				{
-					if (e.type == EventType.KeyDown && e.keyCode == curWindow.settings.addQuadHotKey)
+					if (curWindow.settings.GetHotKey(e, curWindow.settings.addQuadHotKey))
 					{
 						MA_TextureAtlasserProUtils.CreateTextureQuad(curWindow.textureAtlas, "new Quad", new Rect(0, 0, 128, 128), curWindow.settings.autoFocus);
 						e.Use();
 					}
 
+					if(curWindow.settings.GetHotKey(e, curWindow.settings.zoomInHotKey))
+					{
+						Zoom += 0.25f;
+						e.Use();
+					}
+					if(curWindow.settings.GetHotKey(e, curWindow.settings.zoomOutHotKey))
+					{
+						Zoom -= 0.25f;
+						e.Use();
+					}
+
 					if (curWindow.textureAtlas.selectedTextureQuad != null)
 					{
-						if (e.type == EventType.KeyDown && e.keyCode == curWindow.settings.removeQuadHotKey)
+						if (curWindow.settings.GetHotKey(e, curWindow.settings.removeQuadHotKey))
 						{
 							MA_TextureAtlasserProUtils.RemoveTextureQuad(curWindow.textureAtlas, curWindow.settings.autoFocus);
 							e.Use();
 						}
 
-						if (e.type == EventType.KeyDown && e.keyCode == curWindow.settings.duplicateHotKey)
+						if (curWindow.settings.GetHotKey(e, curWindow.settings.duplicateHotKey))
 						{
 							MA_TextureAtlasserProUtils.DuplicateTextureQuad(curWindow.textureAtlas, curWindow.settings.autoFocus, curWindow.settings.copySelectedQuadData, curWindow.settings.duplicatedQuadNamePrefix);
 							e.Use();

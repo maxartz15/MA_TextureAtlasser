@@ -33,7 +33,7 @@ namespace MA_TextureAtlasserPro
 					curWindow.workView.ResetWindow();
 				}
 
-				if(curWindow.textureAtlas != null)
+				if (curWindow.textureAtlas != null)
 				{
 					GUILayout.FlexibleSpace();
 					//GUILayout.Label(curWindow.textureAtlas.textureAtlasSize.ToString());

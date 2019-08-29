@@ -25,7 +25,6 @@ namespace MA_TextureAtlasserPro
 		public Rect dragRectPos;
 
 		//Data
-		public Texture texture;						//Replace this with texture groups
 		public List<MA_TextureGroup> textureGroups;
 		public List<Mesh> meshes;
 
@@ -43,7 +42,7 @@ namespace MA_TextureAtlasserPro
 			//Clamp and snap the guiRect
 			guiRect = new Rect(Mathf.RoundToInt(rect.x / 32) * 32, Mathf.RoundToInt(rect.y / 32) * 32, Mathf.RoundToInt(rect.width / 32) * 32, Mathf.RoundToInt(rect.height / 32) * 32);
 
-			//Draw the sqaud background
+			//Draw the quad background
 			if(showTexture && textureGroups != null && textureGroups.Count > 0 && textureGroups[0].texture != null)
 				GUI.DrawTexture(new Rect(guiRect.x - zoomCoordsOrigin.x, guiRect.y - zoomCoordsOrigin.y, guiRect.width, guiRect.height), textureGroups[0].texture, ScaleMode.StretchToFill);
 			else
@@ -54,8 +53,8 @@ namespace MA_TextureAtlasserPro
 			GUILayout.BeginHorizontal();
 			GUILayout.FlexibleSpace();
 			var tempColor = GUI.backgroundColor;
-			GUI.backgroundColor = Color.white;
-			GUILayout.Label(this.name, GUI.skin.box);
+			GUI.backgroundColor = new Color(1, 1, 1, 0.7f);
+			GUILayout.Label(" " + this.name + " ", GUI.skin.box);
 			GUI.backgroundColor = tempColor;
 			GUILayout.FlexibleSpace();
 			GUILayout.EndHorizontal();
