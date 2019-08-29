@@ -315,6 +315,25 @@ namespace MA_TextureAtlasserPro
 			}
 		}
 
+		public static void ModifyMeshes(MA_TextureAtlasserProAtlas atlas)
+		{
+			if (atlas == null || atlas.textureQuads == null) return;
+			var quads = atlas.textureQuads;
+			for (var index = 0; index < quads.Count; index++)
+			{
+				var quad = quads[index];
+				if (quad.meshes == null) continue;
+				var meshes = quad.meshes;
+				for (var meshIndex = 0; meshIndex < quad.meshes.Count; meshIndex++)
+				{
+					if (meshes[meshIndex] == null) continue;
+					MA_MeshUtils.MA_UVReMap(meshes[meshIndex], atlas.textureAtlasSize, quad.guiRect);
+					EditorUtility.SetDirty(meshes[meshIndex]);
+				}
+			}
+			AssetDatabase.SaveAssets();
+		}
+
 		// public static void ExportAtlasTexturePNG(MA_TextureAtlasserProAtlas atlas, string savePath = EXPORTASSETPATH)
 		// {
 		// 	if(atlas != null && atlas.textureQuads != null)
@@ -363,7 +382,7 @@ namespace MA_TextureAtlasserPro
 							//Create new texture part
 							Texture2D newTexturePart = (Texture2D)MA_Texture.MA_TextureUtils.ConvertToReadableTexture(q.textureGroups[i].texture);
 							//Scale it
-							newTexturePart = newTexturePart.MA_Scale32D((int)q.guiRect.width, (int)q.guiRect.height);
+							newTexturePart = newTexturePart.ScaleTexture((int)q.guiRect.width, (int)q.guiRect.height, true);
 							//Add it
 							newTexture = newTexture.MA_Combine2D(newTexturePart, (int)q.guiRect.x, (int)q.guiRect.y);
 						}

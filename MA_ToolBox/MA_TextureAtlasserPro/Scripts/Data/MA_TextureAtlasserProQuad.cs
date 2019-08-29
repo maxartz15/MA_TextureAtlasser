@@ -53,7 +53,10 @@ namespace MA_TextureAtlasserPro
 
 			GUILayout.BeginHorizontal();
 			GUILayout.FlexibleSpace();
-			GUILayout.Label(this.name);		
+			var tempColor = GUI.backgroundColor;
+			GUI.backgroundColor = Color.white;
+			GUILayout.Label(this.name, GUI.skin.box);
+			GUI.backgroundColor = tempColor;
 			GUILayout.FlexibleSpace();
 			GUILayout.EndHorizontal();
 
