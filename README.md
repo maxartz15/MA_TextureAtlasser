@@ -18,4 +18,4 @@ Download the UnityPackage here: https://github.com/maxartz15/MA_TextureAtlasser/
 
 [![Github All Releases](https://img.shields.io/github/downloads/maxartz15/MA_TextureAtlasser/total.svg)]()
 
-For more information: https://maxartz15.com/ma_textureatlas/
+For more information: https://maxartz15.com/ma-textureatlasser/

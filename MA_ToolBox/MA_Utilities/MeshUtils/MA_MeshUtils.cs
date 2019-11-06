@@ -39,17 +39,19 @@ namespace MA_Mesh
 
 		public static Mesh MA_DuplicateMesh(Mesh mesh)
 		{
-			Mesh newMesh = new Mesh();
-			newMesh.name = mesh.name;
+			Mesh newMesh = new Mesh
+			{
+				name = mesh.name,
+				bounds = mesh.bounds,
+				colors = mesh.colors,
+				subMeshCount = mesh.subMeshCount
+			};
+
 			newMesh.SetVertices(new List<Vector3>(mesh.vertices));
-			newMesh.bounds = mesh.bounds;
-			newMesh.colors = mesh.colors.ToArray();
-			newMesh.subMeshCount = mesh.subMeshCount;
 			for (int i = 0; i < mesh.subMeshCount; i++)
 			{
 				newMesh.SetTriangles(mesh.GetTriangles(i), i);
 			}
-			newMesh.subMeshCount = mesh.subMeshCount;
 			newMesh.SetNormals(new List<Vector3>(mesh.normals));
 			newMesh.SetUVs(0, new List<Vector2>(mesh.uv));
 			newMesh.SetTangents(new List<Vector4>(mesh.tangents));
@@ -86,32 +88,54 @@ namespace MA_Mesh
 			return mesh;
 		}
 
-		public static Mesh MA_UVReMap(this Mesh mesh, Vector2 atlasSize, Rect textureRect, int uvChannel = 0, bool flipY = true)
-		{
-			List<Vector2> uvs = new List<Vector2>();
-			
+		public static Mesh MA_UVReMap(this Mesh mesh, Vector2 atlasSize, Rect textureRect, int uvChannel = 0, bool flipY = true, bool wrap = true)
+		{	
 			//Get UV's
+			List<Vector2> uvs = new List<Vector2>();
 			mesh.GetUVs(uvChannel, uvs);
+
+			//Min and max bounds in 0-1 space.
+			float xMin, xMax, yMin, yMax;
+			xMin = (1f / atlasSize.x * textureRect.width);
+			xMax = (1f / atlasSize.x * textureRect.x);
+			yMin = (1f / atlasSize.y * textureRect.height);
+
+			//Flip uv's if needed.
+			if (flipY)
+			{
+				yMax = (1f / atlasSize.y * (atlasSize.y - textureRect.height - textureRect.y));
+			}
+			else
+			{
+				yMax = (1f / atlasSize.y * textureRect.y);
+			}
 
 			for (int i = 0; i < uvs.Count; i++)
 			{
-				if(flipY)
+				float newX = uvs[i].x * xMin + xMax;
+				float newY = uvs[i].y * yMin + yMax;
+
+				//Wrap the verts outside of the uv space around back into the uv space.
+				if (wrap)
 				{
-					uvs[i] = new Vector2((uvs[i].x / atlasSize.x * textureRect.width) + (1 / atlasSize.x * textureRect.x), 
-						(uvs[i].y / atlasSize.y * textureRect.height) + (1 / atlasSize.y * (atlasSize.y - textureRect.height - textureRect.y)));
+					newX = Wrap(newX, xMax, xMin + xMax);
+					newY = Wrap(newY, yMax, yMin + yMax);
 				}
-				else
-				{			
-					//Debug.Log("01" + uvs[i].x);
-					uvs[i] = new Vector2((uvs[i].x / atlasSize.x * textureRect.width) + (1 / atlasSize.x * textureRect.x), 
-						(uvs[i].y / atlasSize.y * textureRect.height) + (1 / atlasSize.y * textureRect.y));
-					//Debug.Log("02" + uvs[i].x);
-				}
+
+				uvs[i] = new Vector2(newX, newY);
 			}
 
 			mesh.SetUVs(uvChannel, uvs);
 
 			return mesh;
+		}
+
+		public static float Wrap(float val, float min, float max)
+		{
+			val -= (float)Math.Round((val - min) / (max - min)) * (max - min);
+			if (val < min)
+				val = val + max - min;
+			return val;
 		}
 
 		//Start http://wiki.unity3d.com/index.php?title=ObjExporter
@@ -120,7 +144,6 @@ namespace MA_Mesh
 			int vertexOffset = 0;
 			int normalOffset = 0;
 			int uvOffset = 0;
-
 
 			Material material = new Material(Shader.Find("Standard"));
 	
@@ -169,9 +192,9 @@ namespace MA_Mesh
 				}
 			}
 
-			vertexOffset += mesh.vertices.Length;
-			normalOffset += mesh.normals.Length;
-			uvOffset += mesh.uv.Length;
+			//vertexOffset += mesh.vertices.Length;
+			//normalOffset += mesh.normals.Length;
+			//uvOffset += mesh.uv.Length;
 
 			return sb.ToString();
 		}
@@ -186,10 +209,10 @@ namespace MA_Mesh
 		//End
 	}
 
-	struct ObjMaterial
-	{
-		public string name;
-		public string textureName;
-	}
+	//struct ObjMaterial
+	//{
+	//	public string name;
+	//	public string textureName;
+	//}
 }
 #endif

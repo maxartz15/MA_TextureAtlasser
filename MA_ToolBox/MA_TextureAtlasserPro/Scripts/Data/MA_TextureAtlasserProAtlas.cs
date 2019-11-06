@@ -16,7 +16,7 @@ namespace MA_TextureAtlasserPro
 		public MA_TextureAtlasserProQuad selectedTextureQuad;
 		private Rect editorWorkRect;
 		public bool showTextures = false;
-
+        public MA_TextureAtlasserProExportSettings exportSettings;
 
 		//Data
 		public Vector2 textureAtlasSize;

@@ -218,7 +218,7 @@ namespace MA_Texture
         public static Texture MA_Combine(this Texture texture, Texture combineTexture, int offsetX, int offsetY)
         {
             Texture2D texture2D = (Texture2D)MA_TextureUtils.ConvertToReadableTexture(texture);
-            Texture2D combineTexture2D = (Texture2D)MA_TextureUtils.ConvertToReadableTexture(texture);
+            Texture2D combineTexture2D = (Texture2D)MA_TextureUtils.ConvertToReadableTexture(combineTexture);
 
             texture = texture2D.MA_Combine2D(combineTexture2D, offsetX, offsetY);
 

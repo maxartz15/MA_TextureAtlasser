@@ -8,38 +8,13 @@ using MA_Texture;
 
 namespace MA_TextureAtlasserPro
 {
-	public enum ExportPreset
-	{
-		Custom,
-		Default,
-		Sprites,
-		ReplaceObjMeshes
-	}
 
-	public enum ModelFormat
-	{
-		None,
-		Obj,
-		ReplaceObj
-	}
-
-	public enum TextureFormat
-	{
-		None,
-		Png
-	}
-
-	public enum TextureType
-	{
-		Default,
-		Sprite,
-		SpriteSliced
-	}
 
 	public static class MA_TextureAtlasserProUtils
 	{
 		public const string SETTINGSASSETPATH = "Assets/MA_ToolBox/MA_TextureAtlasserPro/Settings/";
-		public const string SAVEASSETPATH = "Assets/MA_ToolBox/MA_TextureAtlasserPro/Atlasses/"; 
+        public const string EXPORTSETTINGSASSETPATH = "Assets/MA_ToolBox/MA_TextureAtlasserPro/Settings/ExportSettings/";
+        public const string SAVEASSETPATH = "Assets/MA_ToolBox/MA_TextureAtlasserPro/Atlasses/"; 
 		public const string LOADASSETPATH = "Assets/MA_ToolBox/MA_TextureAtlasserPro/Atlasses/";
 		public const string EXPORTASSETPATH = "Assets/MA_ToolBox/MA_TextureAtlasserPro/Exports/"; 
 		public const float VIEWOFFSET = 20;
@@ -75,7 +50,39 @@ namespace MA_TextureAtlasserPro
 			return _settings;
 		}
 
-		public static MA_TextureAtlasserProAtlas CreateTextureAtlas(string name, Vector2 size)
+        public static MA_TextureAtlasserProExportSettings CreateExportSettings(string name, bool canModify = true)
+        {
+            MA_TextureAtlasserProExportSettings _settings = ScriptableObject.CreateInstance<MA_TextureAtlasserProExportSettings>();
+            _settings.canModify = canModify;
+
+            if (_settings != null)
+            {
+                AssetDatabase.CreateAsset(_settings, EXPORTSETTINGSASSETPATH + name + ".asset");
+                AssetDatabase.SaveAssets();
+                AssetDatabase.Refresh();
+
+                return _settings;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        public static MA_TextureAtlasserProExportSettings LoadExportSettings()
+        {
+            string name = "MA_DefaultExportSettings";
+            MA_TextureAtlasserProExportSettings _settings = AssetDatabase.LoadAssetAtPath(EXPORTSETTINGSASSETPATH + name + ".asset", typeof(MA_TextureAtlasserProExportSettings)) as MA_TextureAtlasserProExportSettings;
+
+            if (_settings == null)
+            {
+                _settings = CreateExportSettings(name, false);
+            }
+
+            return _settings;
+        }
+
+        public static MA_TextureAtlasserProAtlas CreateTextureAtlas(string name, Vector2 size)
 		{
 			MA_TextureAtlasserProAtlas _atlas = ScriptableObject.CreateInstance<MA_TextureAtlasserProAtlas>();
 
@@ -132,8 +139,10 @@ namespace MA_TextureAtlasserPro
 			{
 				atlas.textureGroupRegistration = new List<MA_TextureGroupRegistration>();
 
-				MA_TextureGroupRegistration groupRegistration = new MA_TextureGroupRegistration();
-				groupRegistration.name = DEFAULTTEXTUREGROUPNAME;
+				MA_TextureGroupRegistration groupRegistration = new MA_TextureGroupRegistration
+				{
+					name = DEFAULTTEXTUREGROUPNAME
+				};
 
 				atlas.textureGroupRegistration.Add(groupRegistration);
 			}
@@ -171,6 +180,11 @@ namespace MA_TextureAtlasserPro
 					}
 				}
 			}
+
+            if(atlas.exportSettings == null)
+            {
+                atlas.exportSettings = LoadExportSettings();
+            }
 		}
 
 		public static MA_TextureAtlasserProQuad CreateTextureQuad(MA_TextureAtlasserProAtlas atlas, string name, Rect rect, bool focus = true)
@@ -248,7 +262,11 @@ namespace MA_TextureAtlasserPro
 
 				if (copyData)
 				{
-					q.meshes = atlas.selectedTextureQuad.meshes;
+					q.meshes = new List<Mesh>();
+					for (int i = 0; i < atlas.selectedTextureQuad.meshes.Count; i++)
+					{
+						q.meshes.Add(atlas.selectedTextureQuad.meshes[i]);
+					}
 
 					for (int i = 0; i < atlas.selectedTextureQuad.textureGroups.Count; i++)
 					{
@@ -276,22 +294,28 @@ namespace MA_TextureAtlasserPro
 			//Add texture groups
 			foreach (MA_TextureGroupRegistration tgr in atlas.textureGroupRegistration)
 			{
-				MA_TextureGroup textureGroup = new MA_TextureGroup();
-				textureGroup.name = tgr.name;
+				MA_TextureGroup textureGroup = new MA_TextureGroup
+				{
+					name = tgr.name
+				};
 				quad.textureGroups.Add(textureGroup);
 			}
 		}
 
 		public static void CreateTextureGroup(MA_TextureAtlasserProAtlas atlas, string name)
 		{
-			MA_TextureGroupRegistration _textureGroupRegistration = new MA_TextureGroupRegistration();
-			_textureGroupRegistration.name = name;
+			MA_TextureGroupRegistration _textureGroupRegistration = new MA_TextureGroupRegistration
+			{
+				name = name
+			};
 			atlas.textureGroupRegistration.Add(_textureGroupRegistration);
 
 			foreach (MA_TextureAtlasserProQuad q in atlas.textureQuads)
 			{
-				MA_TextureGroup _textureGroup = new MA_TextureGroup();
-				_textureGroup.name = name;
+				MA_TextureGroup _textureGroup = new MA_TextureGroup
+				{
+					name = name
+				};
 				q.textureGroups.Add(_textureGroup);
 			}
 		}
@@ -326,99 +350,95 @@ namespace MA_TextureAtlasserPro
 			return (value == 1);
 		}
 
-		#region Export
-		public static void ExportAtlasModels(MA_TextureAtlasserProAtlas atlas, ModelFormat modelFormat, string savePath = EXPORTASSETPATH)
+        #region Export
+        public static void ExportAtlasModels(MA_TextureAtlasserProAtlas atlas, ModelExportSettings modelExportSettings, string savePath = EXPORTASSETPATH)
+        {
+            switch(modelExportSettings.modelFormat)
+            {
+                case ModelFormat.None:
+                    break;
+                case ModelFormat.Obj:
+                    ExportAtlasObj(atlas, modelExportSettings, savePath);
+                    break;
+                default:
+                    break;
+            }
+        }
+
+		private static void ExportAtlasObj(MA_TextureAtlasserProAtlas atlas, ModelExportSettings modelExportSettings, string savePath = EXPORTASSETPATH)
 		{
-			switch (modelFormat)
-			{
-				case ModelFormat.None:
-					break;
-				case ModelFormat.Obj:
-					ExportAtlasObj(atlas, savePath);
-					break;
-				case ModelFormat.ReplaceObj:
-					ModifyAtlasObj(atlas);
-					break;
-				default:
-					break;
-			}
+            if (atlas == null || atlas.textureQuads == null)
+                return;
+
+            if(modelExportSettings.replaceModel)
+            {
+                var quads = atlas.textureQuads;
+
+                for (var index = 0; index < quads.Count; index++)
+                {
+                    var quad = quads[index];
+                    if (quad.meshes == null)
+                        continue;
+
+                    var meshes = quad.meshes;
+                    for (var meshIndex = 0; meshIndex < quad.meshes.Count; meshIndex++)
+                    {
+                        if (meshes[meshIndex] == null)
+                            continue;
+
+                        MA_MeshUtils.MA_UVReMap(meshes[meshIndex], atlas.textureAtlasSize, quad.guiRect, modelExportSettings.uvChannel, modelExportSettings.uvFlipY, modelExportSettings.uvWrap);
+                        EditorUtility.SetDirty(meshes[meshIndex]);
+                    }
+                }
+
+                AssetDatabase.SaveAssets();
+            }
+            else
+            {
+                foreach (MA_TextureAtlasserProQuad quad in atlas.textureQuads)
+                {
+                    //Export Mesh
+                    if (quad.meshes != null)
+                    {
+                        for (int m = 0; m < quad.meshes.Count; m++)
+                        {
+                            if (quad.meshes[m] != null)
+                            {
+                                //Create new mesh
+                                Mesh newMesh = new Mesh();
+                                //Duplicate it from the current one
+                                newMesh = MA_MeshUtils.MA_DuplicateMesh(quad.meshes[m]);
+                                //Remap UV's
+                                newMesh = MA_MeshUtils.MA_UVReMap(newMesh, atlas.textureAtlasSize, quad.guiRect, modelExportSettings.uvChannel, modelExportSettings.uvFlipY, modelExportSettings.uvWrap);
+                                //Save it
+                                string modelName = string.IsNullOrEmpty(quad.name) ? "" : quad.name + "-";
+                                modelName += quad.meshes[m].name;
+                                int n = m + 1;
+                                modelName += "_" + n.ToString("#000");
+
+                                MA_MeshUtils.MeshToFile(newMesh, modelName, savePath);
+                            }
+                        }
+                    }
+                }
+            }	
 		}
 
-		public static void ExportAtlasObj(MA_TextureAtlasserProAtlas atlas, string savePath = EXPORTASSETPATH)
+		public static void ExportAtlasTextures(MA_TextureAtlasserProAtlas atlas, TextureExportSettings textureExportSettings, string savePath = EXPORTASSETPATH)
 		{
-			if (atlas == null || atlas.textureQuads == null)
-				return;
-
-			foreach (MA_TextureAtlasserProQuad ta in atlas.textureQuads)
-			{
-				//Export Mesh
-				if(ta.meshes != null)
-				{
-					for (int m = 0; m < ta.meshes.Count; m++)
-					{
-						if(ta.meshes[m] != null)
-						{
-							//Create new mesh
-							Mesh newMesh = new Mesh();
-							//Duplicate it from the current one
-							newMesh = MA_MeshUtils.MA_DuplicateMesh(ta.meshes[m]);
-							//Remap UV's
-							newMesh = MA_MeshUtils.MA_UVReMap(newMesh, atlas.textureAtlasSize, ta.guiRect);
-							//Save it
-							string modelName = string.IsNullOrEmpty(ta.name) ? "": ta.name + "-";
-							modelName += ta.meshes[m].name;
-							int n = m + 1;
-							modelName += "_" + n.ToString("#000");
-
-							MA_MeshUtils.MeshToFile(newMesh, modelName, savePath);
-						}
-					}
-				}
-			}
+            switch (textureExportSettings.textureFormat)
+            {
+                case TextureFormat.None:
+                    break;
+                case TextureFormat.Png:
+			        ExportAtlasPNG(atlas, textureExportSettings, savePath);
+                    break;
+                default:
+                    break;
+            }
 		}
 
-		public static void ModifyAtlasObj(MA_TextureAtlasserProAtlas atlas)
-		{
-			if (atlas == null || atlas.textureQuads == null)
-				return;
-
-			var quads = atlas.textureQuads;
-
-			for (var index = 0; index < quads.Count; index++)
-			{
-				var quad = quads[index];
-				if (quad.meshes == null)
-					continue;
-
-				var meshes = quad.meshes;
-				for (var meshIndex = 0; meshIndex < quad.meshes.Count; meshIndex++)
-				{
-					if (meshes[meshIndex] == null)
-						continue;
-
-					MA_MeshUtils.MA_UVReMap(meshes[meshIndex], atlas.textureAtlasSize, quad.guiRect);
-					EditorUtility.SetDirty(meshes[meshIndex]);
-				}
-			}
-
-			AssetDatabase.SaveAssets();
-		}
-
-		public static void ExportAtlasTextures(MA_TextureAtlasserProAtlas atlas, TextureFormat textureFormat, TextureType textureType, MA_TextureUtils.TextureScaleMode scaleMode, string savePath = EXPORTASSETPATH)
-		{
-			switch (textureFormat)
-			{
-				case TextureFormat.None:
-					break;
-				case TextureFormat.Png:
-					ExportAtlasPNG(atlas, textureType, scaleMode, savePath);
-					break;
-				default:
-					break;
-			}
-		}
-
-		private static void ExportAtlasPNG(MA_TextureAtlasserProAtlas atlas, TextureType textureType, MA_TextureUtils.TextureScaleMode scaleMode, string savePath = EXPORTASSETPATH)
+		private static void ExportAtlasPNG(MA_TextureAtlasserProAtlas atlas, TextureExportSettings textureExportSettings, string savePath = EXPORTASSETPATH)
 		{
 			if (atlas == null || atlas.textureQuads == null || atlas.textureGroupRegistration == null)
 				return;
@@ -427,17 +447,19 @@ namespace MA_TextureAtlasserPro
 			for (int i = 0; i < atlas.textureGroupRegistration.Count; i++)
 			{
 				//Create new Texture Atlas
-				Texture2D newTexture = new Texture2D((int)atlas.textureAtlasSize.x, (int)atlas.textureAtlasSize.y);
-				newTexture.name = atlas.name + "_" + atlas.textureGroupRegistration[i].name;
+				Texture2D newTexture = new Texture2D((int)atlas.textureAtlasSize.x, (int)atlas.textureAtlasSize.y)
+				{
+					name = atlas.name + "_" + atlas.textureGroupRegistration[i].name
+				};
 
 				foreach (MA_TextureAtlasserProQuad q in atlas.textureQuads)
 				{
 					if (q.textureGroups != null && q.textureGroups[i].texture != null)
 					{
 						//Create new texture part
-						Texture2D newTexturePart = (Texture2D)MA_Texture.MA_TextureUtils.ConvertToReadableTexture(q.textureGroups[i].texture);
+						Texture2D newTexturePart = (Texture2D)MA_TextureUtils.ConvertToReadableTexture(q.textureGroups[i].texture);
 						//Scale it
-						newTexturePart = newTexturePart.MA_Scale2D((int)q.guiRect.width, (int)q.guiRect.height, scaleMode);
+						newTexturePart = newTexturePart.MA_Scale2D((int)q.guiRect.width, (int)q.guiRect.height, textureExportSettings.textureScaleMode);
 						//Add it
 						newTexture = newTexture.MA_Combine2D(newTexturePart, (int)q.guiRect.x, (int)q.guiRect.y);
 					}
@@ -451,25 +473,13 @@ namespace MA_TextureAtlasserPro
 				textureImporter.SaveAndReimport();
 			}
 
-			switch (textureType)
-			{
-				case TextureType.Default:
-					break;
-				case TextureType.Sprite:
-					SetAtlasPNGSpriteSettings(atlas, textureType, savePath);
-					break;
-				case TextureType.SpriteSliced:
-					SetAtlasPNGSpriteSettings(atlas, textureType, savePath);
-					break;
-				default:
-					break;
-			}
+			SetAtlasPNGSpriteSettings(atlas, textureExportSettings, savePath);
 
 			//Refresh
 			AssetDatabase.Refresh();
 		}
 
-		private static void SetAtlasPNGSpriteSettings(MA_TextureAtlasserProAtlas atlas, TextureType textureType, string savePath = EXPORTASSETPATH)
+		private static void SetAtlasPNGSpriteSettings(MA_TextureAtlasserProAtlas atlas, TextureExportSettings textureExportSettings, string savePath = EXPORTASSETPATH)
 		{
 			//Foreach texture group
 			for (int i = 0; i < atlas.textureGroupRegistration.Count; i++)
@@ -481,7 +491,7 @@ namespace MA_TextureAtlasserPro
 				textureImporter.alphaIsTransparency = true;
 
 				//Slice sprites.
-				if (textureType == TextureType.SpriteSliced)
+				if (textureExportSettings.textureType == TextureType.SpriteSliced)
 				{
 					textureImporter.spriteImportMode = SpriteImportMode.None; //Reset it to update?
 					textureImporter.spriteImportMode = SpriteImportMode.Multiple;
@@ -492,10 +502,11 @@ namespace MA_TextureAtlasserPro
 						if (q.textureGroups != null && q.textureGroups[i].texture != null)
 						{
 							//Create new SpriteMetaData.
-							SpriteMetaData smd = new SpriteMetaData();
-
-							smd.name = q.name;
-							smd.rect = new Rect(q.guiRect.x, atlas.textureAtlasSize.y - q.guiRect.y - q.guiRect.height, q.guiRect.width, q.guiRect.height);
+							SpriteMetaData smd = new SpriteMetaData
+							{
+								name = q.name,
+								rect = new Rect(q.guiRect.x, atlas.textureAtlasSize.y - q.guiRect.y - q.guiRect.height, q.guiRect.width, q.guiRect.height)
+							};
 
 							spriteMetaData.Add(smd);
 						}
