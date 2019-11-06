@@ -41,3 +41,12 @@ sysinfo.txt
 # WorkFiles
 *.psd
 *.fbx
+Models/
+Exports/
+Atlasses/
+Settings/
+ExportSettings/
+!ExportSettings.txt
+!Settings.txt
+!Exports.txt
+!Atlasses.txt
