@@ -41,7 +41,7 @@ namespace MA_TextureAtlasserPro
 						MA_TextureAtlasserProExportWindow.InitEditorWindow(curWindow);
 						//MA_TextureAtlasserProUtils.ExportAtlas(curWindow.textureAtlas);
 					}
-					GUILayout.Space(MA_TextureAtlasserProUtils.VIEWOFFSET);
+					GUILayout.Space(MA_TextureAtlasserProUtils.VIEW_OFFSET);
 					if(curWindow.textureAtlas.showTextures && GUILayout.Button(MA_TextureAtlasserProIcons.showTexturesOnIcon, GUILayout.ExpandWidth(false), GUILayout.ExpandHeight(true)))
 					{
 						curWindow.textureAtlas.showTextures = false;
@@ -50,7 +50,7 @@ namespace MA_TextureAtlasserPro
 					{
 						curWindow.textureAtlas.showTextures = true;
 					}
-					GUILayout.Space(MA_TextureAtlasserProUtils.VIEWOFFSET);
+					GUILayout.Space(MA_TextureAtlasserProUtils.VIEW_OFFSET);
 					if(GUILayout.Button(MA_TextureAtlasserProIcons.createQuadIcon, GUILayout.ExpandWidth(false), GUILayout.ExpandHeight(true)))
 					{
 						MA_TextureAtlasserProUtils.CreateTextureQuad(curWindow.textureAtlas, "new Quad", new Rect(0, 0, 128, 128), curWindow.settings.autoFocus);

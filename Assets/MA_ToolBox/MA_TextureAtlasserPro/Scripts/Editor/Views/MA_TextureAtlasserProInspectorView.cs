@@ -11,11 +11,13 @@ namespace MA_TextureAtlasserPro
 	{
 		private MA_TextureAtlasserProQuad lastSelectedQuad;
 
-		private bool isEditing = false;
+        private bool isEditing = false;
 
 		private GUIStyle labelStyle = new GUIStyle(GUI.skin.label);
 
-		public MA_TextureAtlasserProInspectorView(MA_TextureAtlasserProWindow currentEditorWindow, string title) : base(currentEditorWindow, title)
+        bool useAddMeshButton = false;
+
+        public MA_TextureAtlasserProInspectorView(MA_TextureAtlasserProWindow currentEditorWindow, string title) : base(currentEditorWindow, title)
 		{
 			
 		}
@@ -30,8 +32,21 @@ namespace MA_TextureAtlasserPro
 				//Draw inspector
 				if(curWindow.textureAtlas != null && curWindow.textureAtlas.selectedTextureQuad != null)
 				{
-					//Deselect GUI elements when we are focusing on a new quad
-					if(lastSelectedQuad != curWindow.textureAtlas.selectedTextureQuad)
+                    //Change layout during layout event to prevent gui errors
+                    if (e.type == EventType.Layout)
+                    {
+                        if (curWindow.textureAtlas.selectedTextureQuad.meshes != null && curWindow.textureAtlas.selectedTextureQuad.meshes.Count == 0)
+                        {
+                            useAddMeshButton = true;
+                        }
+                        else
+                        {
+                            useAddMeshButton = false;
+                        }
+                    }
+
+                    //Deselect GUI elements when we are focusing on a new quad
+                    if (lastSelectedQuad != curWindow.textureAtlas.selectedTextureQuad)
 					{
 						lastSelectedQuad = curWindow.textureAtlas.selectedTextureQuad;
 						GUI.FocusControl(null);
@@ -43,7 +58,7 @@ namespace MA_TextureAtlasserPro
 					GUILayout.Label("Quad Name");
 					curWindow.textureAtlas.selectedTextureQuad.name = EditorGUILayout.TextField(curWindow.textureAtlas.selectedTextureQuad.name);
 
-					GUILayout.Space(MA_TextureAtlasserProUtils.VIEWOFFSET / 2);
+					GUILayout.Space(MA_TextureAtlasserProUtils.VIEW_OFFSET / 2);
 
 					//Textures
 					GUILayout.BeginHorizontal();
@@ -83,19 +98,20 @@ namespace MA_TextureAtlasserPro
 						GUILayout.EndHorizontal();
 					}
 
-					GUILayout.Space(MA_TextureAtlasserProUtils.VIEWOFFSET / 2);
+					GUILayout.Space(MA_TextureAtlasserProUtils.VIEW_OFFSET / 2);
 
 					//Meshes	
 					GUILayout.Label("Meshes");
-					if(curWindow.textureAtlas.selectedTextureQuad.meshes != null)
+                    if (useAddMeshButton)
+                    {
+                        if (GUILayout.Button("+", EditorStyles.miniButton, GUILayout.ExpandWidth(true)))
+                        {
+                            curWindow.textureAtlas.selectedTextureQuad.meshes.Add(null);
+                        }
+                    }
+
+                    if (curWindow.textureAtlas.selectedTextureQuad.meshes != null)
 					{
-						if(curWindow.textureAtlas.selectedTextureQuad.meshes.Count == 0)
-						{
-							if(GUILayout.Button("+", EditorStyles.miniButton, GUILayout.ExpandWidth(true)))
-							{
-								curWindow.textureAtlas.selectedTextureQuad.meshes.Add(null);
-							}
-						}
 						for (int i = 0; i < curWindow.textureAtlas.selectedTextureQuad.meshes.Count; i++)
 						{
 							GUILayout.BeginHorizontal();
@@ -116,20 +132,21 @@ namespace MA_TextureAtlasserPro
 						curWindow.textureAtlas.selectedTextureQuad.meshes = new List<Mesh>();
 					}
 
-					GUILayout.FlexibleSpace();
-					if(!MA_TextureAtlasserProUtils.IsPowerOfTwo((int)curWindow.textureAtlas.selectedTextureQuad.guiRect.width) || !MA_TextureAtlasserProUtils.IsPowerOfTwo((int)curWindow.textureAtlas.selectedTextureQuad.guiRect.height))
-					{
-						labelStyle.normal.textColor = Color.red;
-					}
-					else
-					{
-						labelStyle.normal.textColor = Color.black;
-					}
 
-					GUILayout.Label("x " + curWindow.textureAtlas.selectedTextureQuad.guiRect.x.ToString() + ", y " + curWindow.textureAtlas.selectedTextureQuad.guiRect.y.ToString());
-					GUILayout.Label("w " + curWindow.textureAtlas.selectedTextureQuad.guiRect.width.ToString() + ", h " + curWindow.textureAtlas.selectedTextureQuad.guiRect.height.ToString(), labelStyle);
+                    GUILayout.FlexibleSpace();
+                    if (!MA_TextureAtlasserProUtils.IsPowerOfTwo((int)curWindow.textureAtlas.selectedTextureQuad.guiRect.width) || !MA_TextureAtlasserProUtils.IsPowerOfTwo((int)curWindow.textureAtlas.selectedTextureQuad.guiRect.height))
+                    {
+                        labelStyle.normal.textColor = Color.red;
+                    }
+                    else
+                    {
+                        labelStyle.normal.textColor = Color.black;
+                    }
 
-					GUILayout.EndVertical();
+                    GUILayout.Label("x " + curWindow.textureAtlas.selectedTextureQuad.guiRect.x.ToString() + ", y " + curWindow.textureAtlas.selectedTextureQuad.guiRect.y.ToString());
+                    GUILayout.Label("w " + curWindow.textureAtlas.selectedTextureQuad.guiRect.width.ToString() + ", h " + curWindow.textureAtlas.selectedTextureQuad.guiRect.height.ToString(), labelStyle);
+
+                    GUILayout.EndVertical();
 					GUILayout.EndArea();           
 				}
 			}

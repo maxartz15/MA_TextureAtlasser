@@ -100,9 +100,9 @@ namespace MA_TextureAtlasserPro
 
             //Calculate view rects
             Rect workViewRect = new Rect(position.width - position.width, position.height - position.height, position.width, position.height);
-			Rect debugViewRect = new Rect(position.width - MA_TextureAtlasserProUtils.VIEWOFFSET - 164, position.height - MA_TextureAtlasserProUtils.VIEWOFFSET - 22, 164, 22);
-            Rect menuViewRect = new Rect(MA_TextureAtlasserProUtils.VIEWOFFSET, MA_TextureAtlasserProUtils.VIEWOFFSET, position.width - (MA_TextureAtlasserProUtils.VIEWOFFSET * 2), 44);
-            Rect inspectorViewRect = new Rect(MA_TextureAtlasserProUtils.VIEWOFFSET, menuViewRect.y + menuViewRect.height + MA_TextureAtlasserProUtils.VIEWOFFSET, 164, position.height - menuViewRect.height - (MA_TextureAtlasserProUtils.VIEWOFFSET * 3));
+			Rect debugViewRect = new Rect(position.width - MA_TextureAtlasserProUtils.VIEW_OFFSET - 164, position.height - MA_TextureAtlasserProUtils.VIEW_OFFSET - 22, 164, 22);
+            Rect menuViewRect = new Rect(MA_TextureAtlasserProUtils.VIEW_OFFSET, MA_TextureAtlasserProUtils.VIEW_OFFSET, position.width - (MA_TextureAtlasserProUtils.VIEW_OFFSET * 2), 44);
+            Rect inspectorViewRect = new Rect(MA_TextureAtlasserProUtils.VIEW_OFFSET, menuViewRect.y + menuViewRect.height + MA_TextureAtlasserProUtils.VIEW_OFFSET, 164, position.height - menuViewRect.height - (MA_TextureAtlasserProUtils.VIEW_OFFSET * 3));
 
             //Draw views and windows in the right oder from back to front
 			if(isLoaded)

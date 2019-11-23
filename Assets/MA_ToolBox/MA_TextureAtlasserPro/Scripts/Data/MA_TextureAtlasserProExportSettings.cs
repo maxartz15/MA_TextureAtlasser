@@ -12,6 +12,7 @@ namespace MA_TextureAtlasserPro
 
         public ModelExportSettings modelExportSettings = new ModelExportSettings();
         public TextureExportSettings textureExportSettings = new TextureExportSettings();
+        public MaterialExportSettings materialExportSettings = new MaterialExportSettings();
     }
 
     [System.Serializable]
@@ -59,5 +60,13 @@ namespace MA_TextureAtlasserPro
         Default,
         Sprite,
         SpriteSliced
+    }
+
+    [System.Serializable]
+    public class MaterialExportSettings
+    {
+        [Header("Material settings:")]
+        public string shader = "Standard";
+        public string[] shaderPropertyNames = { "_MainTex", "_MetallicGlossMap", "_BumpMap" };
     }
 }

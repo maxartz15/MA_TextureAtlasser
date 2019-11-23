@@ -47,7 +47,7 @@ namespace MA_TextureAtlasserPro
 
         void OnGUI()
         {
-            GUILayout.BeginArea(new Rect(MA_TextureAtlasserProUtils.VIEWOFFSET, MA_TextureAtlasserProUtils.VIEWOFFSET, position.width - (MA_TextureAtlasserProUtils.VIEWOFFSET * 2), position.height - (MA_TextureAtlasserProUtils.VIEWOFFSET * 2)));
+            GUILayout.BeginArea(new Rect(MA_TextureAtlasserProUtils.VIEW_OFFSET, MA_TextureAtlasserProUtils.VIEW_OFFSET, position.width - (MA_TextureAtlasserProUtils.VIEW_OFFSET * 2), position.height - (MA_TextureAtlasserProUtils.VIEW_OFFSET * 2)));
             GUILayout.BeginVertical();
 
             //Input options

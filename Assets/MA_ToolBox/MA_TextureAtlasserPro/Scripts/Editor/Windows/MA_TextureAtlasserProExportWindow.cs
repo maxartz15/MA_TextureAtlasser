@@ -88,7 +88,7 @@ namespace MA_TextureAtlasserPro
 
 			if(isLoaded)
 			{
-				GUILayout.BeginArea(new Rect(MA_TextureAtlasserProUtils.VIEWOFFSET, MA_TextureAtlasserProUtils.VIEWOFFSET, position.width - (MA_TextureAtlasserProUtils.VIEWOFFSET * 2), position.height - (MA_TextureAtlasserProUtils.VIEWOFFSET * 2)));
+				GUILayout.BeginArea(new Rect(MA_TextureAtlasserProUtils.VIEW_OFFSET, MA_TextureAtlasserProUtils.VIEW_OFFSET, position.width - (MA_TextureAtlasserProUtils.VIEW_OFFSET * 2), position.height - (MA_TextureAtlasserProUtils.VIEW_OFFSET * 2)));
 				GUILayout.BeginVertical();
 
 				
@@ -156,6 +156,7 @@ namespace MA_TextureAtlasserPro
             {
                 MA_TextureAtlasserProUtils.ExportAtlasModels(curWindow.textureAtlas, curWindow.textureAtlas.exportSettings.modelExportSettings);
                 MA_TextureAtlasserProUtils.ExportAtlasTextures(curWindow.textureAtlas, curWindow.textureAtlas.exportSettings.textureExportSettings);
+                //MA_TextureAtlasserProUtils.ExportAtlasMaterial(curWindow.textureAtlas, curWindow.textureAtlas.exportSettings.materialExportSettings);
             }
 
             GUI.enabled = wasEnabled;
