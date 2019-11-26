@@ -43,7 +43,6 @@ namespace MA_Mesh
 			{
 				name = mesh.name,
 				bounds = mesh.bounds,
-				colors = mesh.colors,
 				subMeshCount = mesh.subMeshCount
 			};
 
@@ -55,6 +54,7 @@ namespace MA_Mesh
 			newMesh.SetNormals(new List<Vector3>(mesh.normals));
 			newMesh.SetUVs(0, new List<Vector2>(mesh.uv));
 			newMesh.SetTangents(new List<Vector4>(mesh.tangents));
+            newMesh.SetColors(new List<Color>(mesh.colors));
 
 			return newMesh;
 		}
