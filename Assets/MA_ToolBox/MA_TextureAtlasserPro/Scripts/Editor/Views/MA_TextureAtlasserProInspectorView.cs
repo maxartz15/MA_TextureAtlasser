@@ -122,7 +122,7 @@ namespace MA_TextureAtlasserPro
 							}
 							if(GUILayout.Button("+", EditorStyles.miniButtonRight, GUILayout.ExpandWidth(false)))
 							{
-								curWindow.textureAtlas.selectedTextureQuad.meshes.Insert(i, null);
+								curWindow.textureAtlas.selectedTextureQuad.meshes.Insert(i + 1, null);
 							}
 							GUILayout.EndHorizontal();
 						}		

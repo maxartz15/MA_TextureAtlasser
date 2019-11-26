@@ -10,7 +10,7 @@ namespace MA_TextureAtlasserPro
 {
     public class MA_TextureAtlasserProExportWindow : EditorWindow
     {
-        private const int windowHeight = 300;
+        private const int windowHeight = 385;
         private const int windowWidth = 320;
 
         //Editor
@@ -19,6 +19,7 @@ namespace MA_TextureAtlasserPro
 
         //Data
         private static bool isLoaded = false;       //Make sure we wait a frame at the start to setup and don't draw.
+        private Vector2 scrollPos;
 
         [MenuItem("MA_ToolKit/MA_TextureAtlasserPro/Export Atlas")]	
 		private static void Init()
@@ -91,8 +92,7 @@ namespace MA_TextureAtlasserPro
 				GUILayout.BeginArea(new Rect(MA_TextureAtlasserProUtils.VIEW_OFFSET, MA_TextureAtlasserProUtils.VIEW_OFFSET, position.width - (MA_TextureAtlasserProUtils.VIEW_OFFSET * 2), position.height - (MA_TextureAtlasserProUtils.VIEW_OFFSET * 2)));
 				GUILayout.BeginVertical();
 
-				
-				if(curWindow != null && curWindow.textureAtlas != null)
+                if (curWindow != null && curWindow.textureAtlas != null)
 				{
 					//Export
 					GUILayout.BeginVertical();
@@ -102,7 +102,7 @@ namespace MA_TextureAtlasserPro
 
                     if(curWindow.textureAtlas.exportSettings != null)
                     {
-                        DrawExportAdvancedOptions();
+                        DrawExportOptions();
                     }
 
 					GUILayout.EndVertical();
@@ -154,9 +154,41 @@ namespace MA_TextureAtlasserPro
 
             if (GUILayout.Button("Export", GUILayout.ExpandWidth(true), GUILayout.Height(37)))
             {
-                MA_TextureAtlasserProUtils.ExportAtlasModels(curWindow.textureAtlas, curWindow.textureAtlas.exportSettings.modelExportSettings);
-                MA_TextureAtlasserProUtils.ExportAtlasTextures(curWindow.textureAtlas, curWindow.textureAtlas.exportSettings.textureExportSettings);
-                //MA_TextureAtlasserProUtils.ExportAtlasMaterial(curWindow.textureAtlas, curWindow.textureAtlas.exportSettings.materialExportSettings);
+                bool export = false;
+
+                if(curWindow.textureAtlas.exportSettings.modelExportSettings.modelFormat == ModelFormat.ReplaceMesh)
+                {
+                    if(EditorUtility.DisplayDialog("Replace original models?", "Are you sure you want to replace the original models, this can't be undone!", "Replace", "Cancel"))
+                    {
+                        export = true;
+                    }
+                }
+                else
+                {
+                    export = true;
+                }
+
+                if(export)
+                {
+                    string[] textures = null;
+                    string material = null;
+                    string[] models = null;
+
+                    if (curWindow.textureAtlas.exportSettings.exportTextures)
+                    {
+                        textures = MA_TextureAtlasserProUtils.ExportAtlasTextures(curWindow.textureAtlas, curWindow.textureAtlas.exportSettings.textureExportSettings);
+                    }
+
+                    if(curWindow.textureAtlas.exportSettings.exportMaterials)
+                    {
+                        material = MA_TextureAtlasserProUtils.ExportAtlasMaterial(curWindow.textureAtlas, curWindow.textureAtlas.exportSettings.materialExportSettings, textures: textures);
+                    }
+
+                    if(curWindow.textureAtlas.exportSettings.exportModels)
+                    {
+                        models = MA_TextureAtlasserProUtils.ExportAtlasModels(curWindow.textureAtlas, curWindow.textureAtlas.exportSettings.modelExportSettings, material: material);
+                    }
+                }
             }
 
             GUI.enabled = wasEnabled;
@@ -164,7 +196,7 @@ namespace MA_TextureAtlasserPro
             GUILayout.EndHorizontal();
 		}
 
-		private void DrawExportAdvancedOptions()
+		private void DrawExportOptions()
 		{
 			bool wasEnabled = GUI.enabled;
 
@@ -179,17 +211,36 @@ namespace MA_TextureAtlasserPro
 
             EditorGUILayout.BeginVertical(EditorStyles.helpBox);
 
-            GUILayout.Label("Models:", EditorStyles.miniBoldLabel);
+            curWindow.textureAtlas.exportSettings.exportModels = GUILayout.Toggle(curWindow.textureAtlas.exportSettings.exportModels, "Models:", EditorStyles.toggle);
             curWindow.textureAtlas.exportSettings.modelExportSettings.modelFormat = (ModelFormat)EditorGUILayout.EnumPopup("ModelFormat:", curWindow.textureAtlas.exportSettings.modelExportSettings.modelFormat);
-            curWindow.textureAtlas.exportSettings.modelExportSettings.replaceModel = EditorGUILayout.Toggle("ReplaceModels:", curWindow.textureAtlas.exportSettings.modelExportSettings.replaceModel);
             curWindow.textureAtlas.exportSettings.modelExportSettings.uvFlipY = EditorGUILayout.Toggle("UV FlipY:", curWindow.textureAtlas.exportSettings.modelExportSettings.uvFlipY);
             curWindow.textureAtlas.exportSettings.modelExportSettings.uvChannel = EditorGUILayout.IntField("UV Channel:", curWindow.textureAtlas.exportSettings.modelExportSettings.uvChannel);
             curWindow.textureAtlas.exportSettings.modelExportSettings.uvWrap = EditorGUILayout.Toggle("UV Wrap:", curWindow.textureAtlas.exportSettings.modelExportSettings.uvWrap);
 
-            GUILayout.Label("Textures:", EditorStyles.miniBoldLabel);
+            curWindow.textureAtlas.exportSettings.exportTextures = GUILayout.Toggle(curWindow.textureAtlas.exportSettings.exportTextures, "Textures:", EditorStyles.toggle);
             curWindow.textureAtlas.exportSettings.textureExportSettings.textureFormat = (TextureFormat)EditorGUILayout.EnumPopup("TextureFormat:", curWindow.textureAtlas.exportSettings.textureExportSettings.textureFormat);
             curWindow.textureAtlas.exportSettings.textureExportSettings.textureType = (TextureType)EditorGUILayout.EnumPopup("TextureType:", curWindow.textureAtlas.exportSettings.textureExportSettings.textureType);
             curWindow.textureAtlas.exportSettings.textureExportSettings.textureScaleMode = (MA_TextureUtils.TextureScaleMode)EditorGUILayout.EnumPopup("TextureScaleMode:", curWindow.textureAtlas.exportSettings.textureExportSettings.textureScaleMode);
+
+            curWindow.textureAtlas.exportSettings.exportMaterials = GUILayout.Toggle(curWindow.textureAtlas.exportSettings.exportMaterials, "Materials:", EditorStyles.toggle);
+            curWindow.textureAtlas.exportSettings.materialExportSettings.shader = (Shader)EditorGUILayout.ObjectField("Shader:", curWindow.textureAtlas.exportSettings.materialExportSettings.shader, typeof(UnityEngine.Shader), false);
+
+            scrollPos = EditorGUILayout.BeginScrollView(scrollPos, false, false, GUILayout.ExpandWidth(true), GUILayout.ExpandHeight(true));
+            for (int i = 0; i < curWindow.textureAtlas.exportSettings.materialExportSettings.shaderPropertyNames.Count; i++)
+            {
+                GUILayout.BeginHorizontal();
+                curWindow.textureAtlas.exportSettings.materialExportSettings.shaderPropertyNames[i] = EditorGUILayout.TextField("", curWindow.textureAtlas.exportSettings.materialExportSettings.shaderPropertyNames[i]);
+                if (GUILayout.Button("-", EditorStyles.miniButtonLeft, GUILayout.ExpandWidth(false)))
+                {
+                    curWindow.textureAtlas.exportSettings.materialExportSettings.shaderPropertyNames.RemoveAt(i);
+                }
+                if (GUILayout.Button("+", EditorStyles.miniButtonRight, GUILayout.ExpandWidth(false)))
+                {
+                    curWindow.textureAtlas.exportSettings.materialExportSettings.shaderPropertyNames.Insert(i + 1, "");
+                }
+                GUILayout.EndHorizontal();
+            }
+            EditorGUILayout.EndScrollView();
 
             EditorGUILayout.EndVertical();
 

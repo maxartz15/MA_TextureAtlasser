@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using MA_Texture;
+using System.Collections.Generic;
 
 namespace MA_TextureAtlasserPro
 {
@@ -10,8 +11,11 @@ namespace MA_TextureAtlasserPro
         [HideInInspector]
         public bool canModify = true;
 
+        public bool exportModels = true;
         public ModelExportSettings modelExportSettings = new ModelExportSettings();
+        public bool exportTextures = true;
         public TextureExportSettings textureExportSettings = new TextureExportSettings();
+        public bool exportMaterials = true;
         public MaterialExportSettings materialExportSettings = new MaterialExportSettings();
     }
 
@@ -19,8 +23,7 @@ namespace MA_TextureAtlasserPro
     public class ModelExportSettings
     {
         [Header("Model settings:")]
-        public ModelFormat modelFormat = ModelFormat.Obj;
-        public bool replaceModel = false;
+        public ModelFormat modelFormat = ModelFormat.UnityMeshPrefab;
         public bool uvFlipY = true;
         public int uvChannel = 0;
         public bool uvWrap = true;
@@ -35,17 +38,19 @@ namespace MA_TextureAtlasserPro
         public MA_TextureUtils.TextureScaleMode textureScaleMode = MA_TextureUtils.TextureScaleMode.Bilinear;
     }
 
-    public enum ExportPreset
+    [System.Serializable]
+    public class MaterialExportSettings
     {
-        Custom,
-        Default,
-        Sprites,
-        ReplaceObjMeshes
+        [Header("Material settings:")]
+        public Shader shader = null;
+        public List<string> shaderPropertyNames = new List<string>() { "_MainTex", "_MetallicGlossMap", "_BumpMap" };
     }
 
     public enum ModelFormat
     {
         None,
+        UnityMeshPrefab,
+        ReplaceMesh,
         Obj
     }
 
@@ -60,13 +65,5 @@ namespace MA_TextureAtlasserPro
         Default,
         Sprite,
         SpriteSliced
-    }
-
-    [System.Serializable]
-    public class MaterialExportSettings
-    {
-        [Header("Material settings:")]
-        public string shader = "Standard";
-        public string[] shaderPropertyNames = { "_MainTex", "_MetallicGlossMap", "_BumpMap" };
     }
 }

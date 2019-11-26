@@ -17,12 +17,9 @@ namespace MA_Mesh
 {
 	public static class MA_MeshUtils
 	{
-		public static void MA_SaveMeshAsset(Mesh mesh, string savePath, string meshName = "")
+		public static string MA_SaveMeshAsset(Mesh mesh, string meshName, string savePath)
 		{
-			Mesh newMesh = new Mesh();
-			newMesh.SetVertices(new List<Vector3>(mesh.vertices));
-			newMesh.SetTriangles(mesh.triangles, 0);
-			newMesh.SetUVs(0, new List<Vector2>(mesh.uv));
+            Mesh newMesh = mesh;
 
 			if(meshName == "")
 			{
@@ -33,9 +30,50 @@ namespace MA_Mesh
 				newMesh.name = meshName;
 			}
 
-			AssetDatabase.CreateAsset(newMesh, savePath);
-			AssetDatabase.SaveAssets();
+            string assetPath = savePath + newMesh.name + ".asset";
+
+            AssetDatabase.CreateAsset(newMesh, assetPath);
+            AssetDatabase.SaveAssets();
+
+            return assetPath;
 		}
+
+        public static string MA_SaveMeshPrefab(Mesh mesh, string meshName, string savePath, string material)
+        {
+            string assetPath = "";
+
+            if (meshName == "")
+            {
+                meshName = mesh.name;
+            }
+
+            string meshPath = MA_SaveMeshAsset(mesh, meshName, savePath);
+            Mesh curMesh = AssetDatabase.LoadAssetAtPath<Mesh>(meshPath);
+
+            if (curMesh != null)
+            {
+                GameObject gameObject = new GameObject
+                {
+                    name = meshName
+                };
+
+                gameObject.AddComponent<MeshFilter>().mesh = curMesh;
+                gameObject.AddComponent<MeshRenderer>();
+
+                Material curMaterial = AssetDatabase.LoadAssetAtPath<Material>(material);
+                if (curMaterial != null)
+                {
+                    gameObject.GetComponent<MeshRenderer>().material = curMaterial;
+                }
+
+                assetPath = savePath + meshName + ".prefab";
+                PrefabUtility.SaveAsPrefabAsset(gameObject, assetPath);
+
+                UnityEngine.GameObject.DestroyImmediate(gameObject);
+            }
+
+            return assetPath;
+        }
 
 		public static Mesh MA_DuplicateMesh(Mesh mesh)
 		{
@@ -199,12 +237,18 @@ namespace MA_Mesh
 			return sb.ToString();
 		}
  
-		public static void MeshToFile(Mesh mesh, string filename, string savePath) 
+		public static string MeshToFile(Mesh mesh, string filename, string savePath) 
 		{
-			using (StreamWriter sw = new StreamWriter(savePath + filename + ".obj")) 
+            string assetPath = savePath + filename + ".obj";
+
+            using (StreamWriter sw = new StreamWriter(assetPath)) 
 			{
 				sw.Write(MeshToString(mesh));
-			}			
+			}
+
+            AssetDatabase.Refresh();
+
+            return assetPath;
 		}
 		//End
 	}
