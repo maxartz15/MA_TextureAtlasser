@@ -62,7 +62,7 @@ namespace MA_Mesh
 
                 assetPath = savePath + prefabName + ".prefab";
 
-#if UNITY_2018_4_OR_NEWER
+#if UNITY_2018_3_OR_NEWER
 
                 PrefabUtility.SaveAsPrefabAsset(gameObject, assetPath);
 
