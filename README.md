@@ -1,21 +1,28 @@
-# MA_TextureAtlasser
-Texture atlas creator for Unity
-
 [![Image](https://maxartz15.com/wp-content/uploads/2019/04/MA_TextureAtlas.png)]()
 
-You can combine textures and/or remap the UV’s for the 3D models.
-By having full control over the size and position of the textures that are being placed in the atlas you will never stand for surprises when exporting. This will cost some more time than auto-generating your texture atlases but you know whats going on and which models/textures are getting priority. The tool can also be used to make 2D sprite sheets.
-
+# MA_TextureAtlasser
+Texture atlas creator tool for Unity. <br> This tool is made to combine textures and/or remap the UV’s for 3D models. The tool can also be used to make 2D sprite sheets. The visual editor gives you the ability to set and prioritize the sizes and positions in the texture atlas/sprite sheet.
 - Combine textures/sprites.
 - Automatically adjusts the UV's of the assigned meshes to match the new texture atlas.
-- Exports meshes as OBJ.
-- Exports texture atlas as PNG.
-- Exports texture atlas as a (sliced) sprite sheet.
 
-[Example video](https://youtu.be/PBRKlopkZP0)
+### Download unitypackage
+https://github.com/maxartz15/MA_TextureAtlasser/releases <br>
+[![Github All Releases](https://img.shields.io/github/downloads/maxartz15/MA_TextureAtlasser/total.svg)]() 
 
-Download the UnityPackage here: https://github.com/maxartz15/MA_TextureAtlasser/releases
+### Tested Unity versions
+[![Image](https://img.shields.io/badge/Unity-2017.4-green)]() [![Image](https://img.shields.io/badge/Unity-2018.4-green)]() [![Image](https://img.shields.io/badge/Unity-2019.2-green)]()
 
-[![Github All Releases](https://img.shields.io/github/downloads/maxartz15/MA_TextureAtlasser/total.svg)]()
+## Export options
+### Meshes
+- UnityMesh (with prefab setup)
+- OBJ
+- Replace orginal (this will replace the orginal model, make sure to backup before doing this!)
+### Textures
+- PNG
+- PNG (sliced) sprite sheet
+### Materials
+- Material (with assigned textures and selected shader)
 
-For more information: https://maxartz15.com/ma-textureatlasser/
+## Resources
+[Youtube video](https://youtu.be/PBRKlopkZP0) <br>
+[Website](https://maxartz15.com/ma-textureatlasser/)
