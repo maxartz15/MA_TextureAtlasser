@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿#if UNITY_EDITOR
+using UnityEngine;
 using System.Collections;
 using MA_Texture;
 using System.Collections.Generic;
@@ -67,3 +68,4 @@ namespace MA_TextureAtlasserPro
         SpriteSliced
     }
 }
+#endif

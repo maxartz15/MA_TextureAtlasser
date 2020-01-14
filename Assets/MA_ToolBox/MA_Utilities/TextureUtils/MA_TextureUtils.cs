@@ -41,7 +41,7 @@ namespace MA_Texture
             RenderTexture.active = tmp;
 
             // Create a new readable Texture2D to copy the pixels to it
-            Texture2D myTexture2D = new Texture2D(texture.width, texture.width);
+            Texture2D myTexture2D = new Texture2D(texture.width, texture.height);
 
             // Copy the pixels from the RenderTexture to the new Texture
             myTexture2D.ReadPixels(new Rect(0, 0, tmp.width, tmp.height), 0, 0);
