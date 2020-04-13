@@ -161,17 +161,20 @@ namespace MA_Texture
 		{
 			Color[] newColors = new Color[newWidth * newHeight];
 
-			float ratioX = ((float)curWidth) / newWidth;
-			float ratioY = ((float)curHeight) / newHeight;
+            float ratioX = 1.0f / ((float)newWidth / (curWidth - 1));
+            float ratioY = 1.0f / ((float)newHeight / (curHeight - 1));
 
-			for (int y = 0; y < newHeight; y++)
+            for (int y = 0; y < newHeight; y++)
 			{
-				var thisY = Mathf.RoundToInt((ratioY * y) * curWidth);
-				var yw = y * newWidth;
+                int yFloor = Mathf.FloorToInt(y * ratioY);
+                var y1 = (yFloor + 1) * curWidth;
+                var yw = y * newWidth;
 
-				for (int x = 0; x < newWidth; x++)
+                for (int x = 0; x < newWidth; x++)
 				{
-					newColors[yw + x] = curColors[Mathf.RoundToInt(thisY + ratioX * x)];
+                    int xFloor = Mathf.FloorToInt(x * ratioX);
+
+                    newColors[yw + x] = curColors[Mathf.RoundToInt(y1 + xFloor)];
 				}
 			}
 
