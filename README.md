@@ -10,7 +10,7 @@ https://github.com/maxartz15/MA_TextureAtlasser/releases <br>
 [![Github All Releases](https://img.shields.io/github/downloads/maxartz15/MA_TextureAtlasser/total.svg)]() 
 
 ### Tested Unity versions
-[![Image](https://img.shields.io/badge/Unity-2017.4-green)]() [![Image](https://img.shields.io/badge/Unity-2018.4-green)]() [![Image](https://img.shields.io/badge/Unity-2019.2-green)]()
+[![Image](https://img.shields.io/badge/Unity-2017.4-green)]() [![Image](https://img.shields.io/badge/Unity-2018.4-green)]() [![Image](https://img.shields.io/badge/Unity-2019.3-green)]()
 
 ## Export options
 ### Meshes
