@@ -10,7 +10,10 @@ namespace MA_TextureAtlasserPro
 	[System.Serializable]
 	public class MA_TextureAtlasserProSettings : ScriptableObject
 	{
-		[Header("Hotkeys:")]
+		[Header("GUI (requires reload):")]
+		public MA_TextureAtlasserProGuiSettings editorGuiSettings = new MA_TextureAtlasserProGuiSettings();
+
+		[Header("HotKeys:")]
 		public bool useHotkeys = false;
 		public EventModifiers modifierKey = EventModifiers.Alt;
 		public KeyCode addQuadHotKey = KeyCode.Q;
@@ -36,5 +39,19 @@ namespace MA_TextureAtlasserPro
 			return false;
 		}
 	}
+
+	[System.Serializable]
+    public class MA_TextureAtlasserProGuiSettings
+    {
+        public MA_EditorGuiMode editorGuiMode = MA_EditorGuiMode.IconAndText;
+        public bool enableToolTips = true;
+    }
+
+    public enum MA_EditorGuiMode
+    {
+        IconAndText = 0,
+        Icon = 1,
+        Text = 2
+    }
 }
 #endif

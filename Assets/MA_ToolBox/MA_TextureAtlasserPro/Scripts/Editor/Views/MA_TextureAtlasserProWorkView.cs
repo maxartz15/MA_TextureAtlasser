@@ -145,9 +145,9 @@ namespace MA_TextureAtlasserPro
                 {
                     if(q.isSelected)
                     {
-                        GUI.Button(new Rect(q.dragRectPos.x, q.dragRectPos.y, q.dragRectPos.width, q.dragRectPos.height), MA_TextureAtlasserProIcons.dragHandleIcon);
-                        GUI.Button(new Rect(q.dragRectWidth.x, q.dragRectWidth.y, q.dragRectWidth.width, q.dragRectWidth.height), MA_TextureAtlasserProIcons.dragHandleIcon);
-                        GUI.Button(new Rect(q.dragRectHeight.x, q.dragRectHeight.y, q.dragRectHeight.width, q.dragRectHeight.height), MA_TextureAtlasserProIcons.dragHandleIcon);
+                        GUI.Button(new Rect(q.dragRectPos.x, q.dragRectPos.y, q.dragRectPos.width, q.dragRectPos.height), MA_TextureAtlasserProGuiLoader.dragHandleGC);
+                        GUI.Button(new Rect(q.dragRectWidth.x, q.dragRectWidth.y, q.dragRectWidth.width, q.dragRectWidth.height), MA_TextureAtlasserProGuiLoader.dragHandleGC);
+                        GUI.Button(new Rect(q.dragRectHeight.x, q.dragRectHeight.y, q.dragRectHeight.width, q.dragRectHeight.height), MA_TextureAtlasserProGuiLoader.dragHandleGC);
                     }
                 }
             }

@@ -136,7 +136,7 @@ namespace MA_TextureAtlasserPro
 		{
 			GUILayout.BeginHorizontal(EditorStyles.helpBox, GUILayout.Height(44));
 
-            if (GUILayout.Button(MA_TextureAtlasserProIcons.createAtlasIcon, GUILayout.ExpandWidth(false), GUILayout.ExpandHeight(true)))
+            if (GUILayout.Button(MA_TextureAtlasserProGuiLoader.createExportSettingsGC, GUILayout.ExpandWidth(false), GUILayout.ExpandHeight(true)))
             {
                 MA_TextureAtlasserProCreateExportWindow.InitWindow(curWindow);
             }

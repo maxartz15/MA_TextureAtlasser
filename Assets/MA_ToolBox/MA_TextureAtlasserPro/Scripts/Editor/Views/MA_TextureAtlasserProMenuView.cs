@@ -25,42 +25,42 @@ namespace MA_TextureAtlasserPro
 				GUILayout.BeginArea(editorViewRect, EditorStyles.helpBox);	
 				GUILayout.BeginHorizontal(GUILayout.ExpandWidth(true));
 
-				if(GUILayout.Button(MA_TextureAtlasserProIcons.createAtlasIcon, GUILayout.ExpandWidth(false), GUILayout.ExpandHeight(true)))
+				if(GUILayout.Button(MA_TextureAtlasserProGuiLoader.createAtlasGC, GUILayout.ExpandWidth(false), GUILayout.ExpandHeight(true)))
 				{
 					MA_TextureAtlasserProCreateWindow.InitEditorWindow(curWindow);
 				}
-				if(GUILayout.Button(MA_TextureAtlasserProIcons.loadAtlasIcon, GUILayout.ExpandWidth(false), GUILayout.ExpandHeight(true)))
+				if(GUILayout.Button(MA_TextureAtlasserProGuiLoader.loadAtlasGC, GUILayout.ExpandWidth(false), GUILayout.ExpandHeight(true)))
 				{
 					curWindow.textureAtlas = MA_TextureAtlasserProUtils.LoadTextureAtlas();
 				}
 
 				if(curWindow.textureAtlas != null)
 				{
-					if(GUILayout.Button(MA_TextureAtlasserProIcons.exportAtlasIcon, GUILayout.ExpandWidth(false), GUILayout.ExpandHeight(true)))
+					if(GUILayout.Button(MA_TextureAtlasserProGuiLoader.exportAtlasGC, GUILayout.ExpandWidth(false), GUILayout.ExpandHeight(true)))
 					{
 						MA_TextureAtlasserProExportWindow.InitEditorWindow(curWindow);
 						//MA_TextureAtlasserProUtils.ExportAtlas(curWindow.textureAtlas);
 					}
 					GUILayout.Space(MA_TextureAtlasserProUtils.VIEW_OFFSET);
-					if(curWindow.textureAtlas.showTextures && GUILayout.Button(MA_TextureAtlasserProIcons.showTexturesOnIcon, GUILayout.ExpandWidth(false), GUILayout.ExpandHeight(true)))
+					if(curWindow.textureAtlas.showTextures && GUILayout.Button(MA_TextureAtlasserProGuiLoader.showTexturesOnGC, GUILayout.ExpandWidth(false), GUILayout.ExpandHeight(true)))
 					{
 						curWindow.textureAtlas.showTextures = false;
 					}
-					else if(!curWindow.textureAtlas.showTextures && GUILayout.Button(MA_TextureAtlasserProIcons.showTexturesOffIcon, GUILayout.ExpandWidth(false), GUILayout.ExpandHeight(true)))
+					else if(!curWindow.textureAtlas.showTextures && GUILayout.Button(MA_TextureAtlasserProGuiLoader.showTexturesOffGC, GUILayout.ExpandWidth(false), GUILayout.ExpandHeight(true)))
 					{
 						curWindow.textureAtlas.showTextures = true;
 					}
 					GUILayout.Space(MA_TextureAtlasserProUtils.VIEW_OFFSET);
-					if(GUILayout.Button(MA_TextureAtlasserProIcons.createQuadIcon, GUILayout.ExpandWidth(false), GUILayout.ExpandHeight(true)))
+					if(GUILayout.Button(MA_TextureAtlasserProGuiLoader.createQuadGC, GUILayout.ExpandWidth(false), GUILayout.ExpandHeight(true)))
 					{
 						MA_TextureAtlasserProUtils.CreateTextureQuad(curWindow.textureAtlas, "new Quad", new Rect(0, 0, 128, 128), curWindow.settings.autoFocus);
 					}
-					if(curWindow.textureAtlas.selectedTextureQuad != null && GUILayout.Button(MA_TextureAtlasserProIcons.removeQuadIcon, GUILayout.ExpandWidth(false), GUILayout.ExpandHeight(true)))
+					if(curWindow.textureAtlas.selectedTextureQuad != null && GUILayout.Button(MA_TextureAtlasserProGuiLoader.removeQuadGC, GUILayout.ExpandWidth(false), GUILayout.ExpandHeight(true)))
 					{
 						if(curWindow.textureAtlas.selectedTextureQuad != null)
 							MA_TextureAtlasserProUtils.RemoveTextureQuad(curWindow.textureAtlas, curWindow.settings.autoFocus);		
 					}
-					if (curWindow.textureAtlas.selectedTextureQuad != null && GUILayout.Button(MA_TextureAtlasserProIcons.duplicateQuadIcon, GUILayout.ExpandWidth(false), GUILayout.ExpandHeight(true)))
+					if (curWindow.textureAtlas.selectedTextureQuad != null && GUILayout.Button(MA_TextureAtlasserProGuiLoader.duplicateQuadGC, GUILayout.ExpandWidth(false), GUILayout.ExpandHeight(true)))
 					{
 						if (curWindow.textureAtlas.selectedTextureQuad != null)
 							MA_TextureAtlasserProUtils.DuplicateTextureQuad(curWindow.textureAtlas, curWindow.settings.autoFocus, curWindow.settings.copySelectedQuadData, curWindow.settings.duplicatedQuadNamePrefix);

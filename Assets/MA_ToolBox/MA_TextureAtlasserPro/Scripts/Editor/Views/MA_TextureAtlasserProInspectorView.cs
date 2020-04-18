@@ -63,7 +63,7 @@ namespace MA_TextureAtlasserPro
 					//Textures
 					GUILayout.BeginHorizontal();
 					GUILayout.Label("Textures", GUILayout.ExpandWidth(true));
-					if(GUILayout.Button(MA_TextureAtlasserProIcons.editIcon, EditorStyles.miniButton, GUILayout.Width(36), GUILayout.Height(15)))
+					if(GUILayout.Button(MA_TextureAtlasserProGuiLoader.editGC, EditorStyles.miniButton, GUILayout.Width(36), GUILayout.Height(15)))
 					{
 						isEditing = !isEditing;
 					}
@@ -140,7 +140,7 @@ namespace MA_TextureAtlasserPro
                     }
                     else
                     {
-                        labelStyle.normal.textColor = Color.black;
+                        labelStyle.normal.textColor = GUI.skin.label.normal.textColor;
                     }
 
                     GUILayout.Label("x " + curWindow.textureAtlas.selectedTextureQuad.guiRect.x.ToString() + ", y " + curWindow.textureAtlas.selectedTextureQuad.guiRect.y.ToString());

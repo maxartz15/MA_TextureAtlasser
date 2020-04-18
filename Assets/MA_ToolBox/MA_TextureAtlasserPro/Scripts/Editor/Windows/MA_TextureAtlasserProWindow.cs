@@ -34,7 +34,7 @@ namespace MA_TextureAtlasserPro
 		private void OnEnable()
 		{
 			//Load the icons
-			MA_TextureAtlasserProIcons.LoadIcons();
+			//MA_TextureAtlasserProGuiLoader.LoadEditorGui(thisWindow.settings.editorGuiSettings);
 		}
 
         private static void GetCurrentWindow()
@@ -59,6 +59,7 @@ namespace MA_TextureAtlasserPro
 			}
 
 			thisWindow.settings = MA_TextureAtlasserProUtils.LoadSettings();
+			MA_TextureAtlasserProGuiLoader.LoadEditorGui(thisWindow.settings);
 			thisWindow.workView = new MA_TextureAtlasserProWorkView(thisWindow, "workView");
 			thisWindow.menuView = new MA_TextureAtlasserProMenuView(thisWindow, "menuView");
 			thisWindow.inspectorView = new MA_TextureAtlasserProInspectorView(thisWindow, "inspectorView");
