@@ -63,7 +63,7 @@ namespace MA_TextureAtlasserPro
 					if (curWindow.textureAtlas.selectedTextureQuad != null && GUILayout.Button(MA_TextureAtlasserProGuiLoader.duplicateQuadGC, GUILayout.ExpandWidth(false), GUILayout.ExpandHeight(true)))
 					{
 						if (curWindow.textureAtlas.selectedTextureQuad != null)
-							MA_TextureAtlasserProUtils.DuplicateTextureQuad(curWindow.textureAtlas, curWindow.settings.autoFocus, curWindow.settings.copySelectedQuadData, curWindow.settings.duplicatedQuadNamePrefix);
+							MA_TextureAtlasserProUtils.DuplicateTextureQuad(curWindow.textureAtlas, curWindow.settings.autoFocus, curWindow.settings.duplicatedQuadNamePrefix);
 					}
 				}
 

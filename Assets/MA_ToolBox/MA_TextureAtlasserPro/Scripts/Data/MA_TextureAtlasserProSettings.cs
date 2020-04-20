@@ -23,7 +23,6 @@ namespace MA_TextureAtlasserPro
 		public KeyCode zoomOutHotKey = KeyCode.Minus;
 
 		[Header("Duplication:")]
-		public bool copySelectedQuadData = true;
 		public string duplicatedQuadNamePrefix = "new ";
 
 		[Header("Selection")]

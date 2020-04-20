@@ -15,7 +15,7 @@ namespace MA_TextureAtlasserPro
 		public List<MA_TextureAtlasserProQuad> textureQuads;
 		public MA_TextureAtlasserProQuad selectedTextureQuad;
 		private Rect editorWorkRect;
-		public bool showTextures = false;
+		public bool showTextures = true;
         public MA_TextureAtlasserProExportSettings exportSettings;
 
 		//Data

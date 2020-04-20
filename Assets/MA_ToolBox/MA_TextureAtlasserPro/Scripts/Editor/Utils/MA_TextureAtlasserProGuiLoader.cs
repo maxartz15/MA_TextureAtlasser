@@ -96,9 +96,9 @@ namespace MA_TextureAtlasserPro
             exportAtlasGC.tooltip = "Opens the export window.";
             if (settings.useHotkeys) 
             {
-                createQuadGC.tooltip = string.Format("({0} + {1}), Creates a new quad.", settings.modifierKey, settings.addQuadHotKey);
-                removeQuadGC.tooltip = string.Format("({0} + {1}), Removes the selected quad.", settings.modifierKey, settings.removeQuadHotKey);
-                duplicateQuadGC.tooltip = string.Format("({0} + {1}), Duplicates the selected quad.", settings.modifierKey, settings.duplicateHotKey);            
+                createQuadGC.tooltip = string.Format("({0}+{1}), Creates a new quad.", settings.modifierKey, settings.addQuadHotKey);
+                removeQuadGC.tooltip = string.Format("({0}+{1}), Removes the selected quad.", settings.modifierKey, settings.removeQuadHotKey);
+                duplicateQuadGC.tooltip = string.Format("({0}+{1}), Duplicates the selected quad.", settings.modifierKey, settings.duplicateHotKey);            
             }
             else
             {

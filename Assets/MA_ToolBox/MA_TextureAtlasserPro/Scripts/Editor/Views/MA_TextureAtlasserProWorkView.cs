@@ -91,7 +91,7 @@ namespace MA_TextureAtlasserPro
                 e.Use();
             }
 
-			//Hotkeys.
+			//HotKeys.
 			if (curWindow.settings.useHotkeys)
 			{
 				if(curWindow.textureAtlas != null)
@@ -123,7 +123,7 @@ namespace MA_TextureAtlasserPro
 
 						if (curWindow.settings.GetHotKey(e, curWindow.settings.duplicateHotKey))
 						{
-							MA_TextureAtlasserProUtils.DuplicateTextureQuad(curWindow.textureAtlas, curWindow.settings.autoFocus, curWindow.settings.copySelectedQuadData, curWindow.settings.duplicatedQuadNamePrefix);
+							MA_TextureAtlasserProUtils.DuplicateTextureQuad(curWindow.textureAtlas, curWindow.settings.autoFocus, curWindow.settings.duplicatedQuadNamePrefix);
 							e.Use();
 						}
 					}

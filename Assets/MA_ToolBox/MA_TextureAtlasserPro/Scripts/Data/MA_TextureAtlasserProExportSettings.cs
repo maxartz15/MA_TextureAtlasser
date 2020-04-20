@@ -50,9 +50,7 @@ namespace MA_TextureAtlasserPro
     public enum ModelFormat
     {
         None,
-        UnityMeshPrefab,
-        ReplaceMesh,
-        Obj
+        UnityMeshPrefab
     }
 
     public enum TextureFormat

@@ -11,22 +11,28 @@ namespace MA_TextureAtlasserPro
 	public class MA_TextureAtlasserProQuad : ScriptableObject
 	{
 		//Editor
-		public bool isSelected = false;				//Is this thing selected
-		public Rect rect;							//The internal rect
-		public Rect guiRect;						//The visual clamped and snapped rect
-		public bool debugMode = false;				//Are we debugging, for showing some other things (like handles)
+		[HideInInspector]
+		public bool isSelected = false;             //Is this thing selected
+		public Rect rect;                           //The internal rect
+		[HideInInspector]
+		public Rect guiRect;                        //The visual clamped and snapped rect
+		[HideInInspector]
+		public bool debugMode = false;              //Are we debugging, for showing some other things (like handles)
 
-		private bool isDragging = false;			//Are we editing the pos or size
+		private bool isDragging = false;            //Are we editing the pos or size
 		private bool isDraggingRectHeigt = false;
+		[HideInInspector]
 		public Rect dragRectHeight;
 		private bool isDraggingRectWidth = false;
+		[HideInInspector]
 		public Rect dragRectWidth;
 		private bool isDraggingRectPos = false;
+		[HideInInspector]
 		public Rect dragRectPos;
 
 		//Data
 		public List<MA_TextureGroup> textureGroups;
-		public List<Mesh> meshes;
+		public List<MA_ModelGroup> modelGroups;
 
 		public void UpdateTextureQuad(Event e, Rect editorViewRect, Rect editorWorkRect, Vector2 zoomCoordsOrigin, bool useEvents, bool showTexture)
 		{

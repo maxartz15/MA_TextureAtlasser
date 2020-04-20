@@ -154,40 +154,23 @@ namespace MA_TextureAtlasserPro
 
             if (GUILayout.Button("Export", GUILayout.ExpandWidth(true), GUILayout.Height(37)))
             {
-                bool export = false;
+                string[] textures = null;
+                string material = null;
+                string[] models = null;
 
-                if(curWindow.textureAtlas.exportSettings.modelExportSettings.modelFormat == ModelFormat.ReplaceMesh)
+                if (curWindow.textureAtlas.exportSettings.exportTextures)
                 {
-                    if(EditorUtility.DisplayDialog("Replace original models?", "Are you sure you want to replace the original models, this can't be undone!", "Replace", "Cancel"))
-                    {
-                        export = true;
-                    }
-                }
-                else
-                {
-                    export = true;
+                    textures = MA_TextureAtlasserProUtils.ExportAtlasTextures(curWindow.textureAtlas, curWindow.textureAtlas.exportSettings.textureExportSettings);
                 }
 
-                if(export)
+                if (curWindow.textureAtlas.exportSettings.exportMaterials)
                 {
-                    string[] textures = null;
-                    string material = null;
-                    string[] models = null;
+                    material = MA_TextureAtlasserProUtils.ExportAtlasMaterial(curWindow.textureAtlas, curWindow.textureAtlas.exportSettings.materialExportSettings, textures: textures);
+                }
 
-                    if (curWindow.textureAtlas.exportSettings.exportTextures)
-                    {
-                        textures = MA_TextureAtlasserProUtils.ExportAtlasTextures(curWindow.textureAtlas, curWindow.textureAtlas.exportSettings.textureExportSettings);
-                    }
-
-                    if(curWindow.textureAtlas.exportSettings.exportMaterials)
-                    {
-                        material = MA_TextureAtlasserProUtils.ExportAtlasMaterial(curWindow.textureAtlas, curWindow.textureAtlas.exportSettings.materialExportSettings, textures: textures);
-                    }
-
-                    if(curWindow.textureAtlas.exportSettings.exportModels)
-                    {
-                        models = MA_TextureAtlasserProUtils.ExportAtlasModels(curWindow.textureAtlas, curWindow.textureAtlas.exportSettings.modelExportSettings, material: material);
-                    }
+                if (curWindow.textureAtlas.exportSettings.exportModels)
+                {
+                    models = MA_TextureAtlasserProUtils.ExportAtlasModels(curWindow.textureAtlas, curWindow.textureAtlas.exportSettings.modelExportSettings, materialPath: material);
                 }
             }
 
