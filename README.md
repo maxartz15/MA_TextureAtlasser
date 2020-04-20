@@ -11,6 +11,7 @@ Texture atlas creator tool for Unity. <br> This tool is made to combine textures
 ### Unity versions
 - Latest release requires Unity 2018.3 or higher.
 - Releases before 1.8 should work with older Unity versions.
+- Upgrading to 1.8+ will break existing atlasses.
 
 ## Export options
 ### Meshes
