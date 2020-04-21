@@ -24,4 +24,4 @@ Texture atlas creator tool for Unity. <br> This tool is made to combine textures
 
 ## Resources
 [Youtube video](https://youtu.be/PBRKlopkZP0) <br>
-[Website](https://maxartz15.com/ma-textureatlasser/)
+[Website](https://maxartz15.com/ma_textureatlas/)
