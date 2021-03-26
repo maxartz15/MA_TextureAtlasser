@@ -84,7 +84,12 @@ namespace MA_Mesh
 				newMesh.SetTriangles(mesh.GetTriangles(i), i);
 			}
 			newMesh.SetNormals(new List<Vector3>(mesh.normals));
-			newMesh.SetUVs(0, new List<Vector2>(mesh.uv));
+			for (int i = 0; i < 8; i++)
+			{
+				List<Vector2> uvs = new List<Vector2>();
+				mesh.GetUVs(i, uvs);
+				newMesh.SetUVs(i, uvs);
+			}
 			newMesh.SetTangents(new List<Vector4>(mesh.tangents));
 			newMesh.SetColors(new List<Color>(mesh.colors));
 
