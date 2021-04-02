@@ -109,9 +109,11 @@ namespace MA_TextureAtlasserPro
                                 }
 
                                 SerializedProperty meshesSP = modelGroupsSP.GetArrayElementAtIndex(i).FindPropertyRelative("meshes");
-                                EditorGUILayout.PropertyField(meshesSP, false, GUILayout.ExpandWidth(false), GUILayout.MaxWidth(editorViewRect.width * 0.5f));
-
-                                if (meshesSP.isExpanded)
+#if UNITY_2020_2
+#else
+								EditorGUILayout.PropertyField(meshesSP, false, GUILayout.ExpandWidth(false), GUILayout.MaxWidth(editorViewRect.width * 0.5f));
+#endif
+								if (meshesSP.isExpanded)
                                 {
                                     for (int j = 0; j < curWindow.textureAtlas.selectedTextureQuad.modelGroups[i].meshes.Count; j++)
                                     {
@@ -131,8 +133,8 @@ namespace MA_TextureAtlasserPro
                                 {
                                     curWindow.textureAtlas.selectedTextureQuad.modelGroups[i].meshes.Add(null);
                                 }
-                            }
-                        }
+							}
+						}
 
                         if (GUILayout.Button("+", EditorStyles.miniButton, GUILayout.ExpandWidth(true)))
                         {
