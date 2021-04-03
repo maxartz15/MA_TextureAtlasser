@@ -109,7 +109,7 @@ namespace MA_TextureAtlasserPro
                                 }
 
                                 SerializedProperty meshesSP = modelGroupsSP.GetArrayElementAtIndex(i).FindPropertyRelative("meshes");
-#if UNITY_2020_2
+#if UNITY_2020_2_OR_NEWER
 #else
 								EditorGUILayout.PropertyField(meshesSP, false, GUILayout.ExpandWidth(false), GUILayout.MaxWidth(editorViewRect.width * 0.5f));
 #endif
