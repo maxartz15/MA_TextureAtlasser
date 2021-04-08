@@ -94,53 +94,54 @@ namespace MA_TextureAtlasserPro
 					{
 						SerializedProperty modelGroupsSP = serializedObject.FindProperty("modelGroups");
 
-                        for (int i = 0; i < curWindow.textureAtlas.selectedTextureQuad.modelGroups.Count; i++)
+						for (int i = 0; i < curWindow.textureAtlas.selectedTextureQuad.modelGroups.Count; i++)
 						{
 							using (new GUILayout.VerticalScope(EditorStyles.helpBox))
 							{
-                                using (new GUILayout.HorizontalScope())
-                                {
+								using (new GUILayout.HorizontalScope())
+								{
 									curWindow.textureAtlas.selectedTextureQuad.modelGroups[i].name = EditorGUILayout.TextField(curWindow.textureAtlas.selectedTextureQuad.modelGroups[i].name);
-                                    if (GUILayout.Button("-", EditorStyles.miniButton, GUILayout.ExpandWidth(true)))
-                                    {
-                                        curWindow.textureAtlas.selectedTextureQuad.modelGroups.RemoveAt(i);
-                                        break;
-                                    }
-                                }
+									if (GUILayout.Button("-", EditorStyles.miniButton, GUILayout.ExpandWidth(true)))
+									{
+										curWindow.textureAtlas.selectedTextureQuad.modelGroups.RemoveAt(i);
+										break;
+									}
+								}
 
-                                SerializedProperty meshesSP = modelGroupsSP.GetArrayElementAtIndex(i).FindPropertyRelative("meshes");
+								SerializedProperty meshesSP = modelGroupsSP.GetArrayElementAtIndex(i).FindPropertyRelative("meshes");
 #if UNITY_2020_2_OR_NEWER
+								meshesSP.isExpanded = EditorGUILayout.Foldout(meshesSP.isExpanded, "Meshes", true);							
 #else
 								EditorGUILayout.PropertyField(meshesSP, false, GUILayout.ExpandWidth(false), GUILayout.MaxWidth(editorViewRect.width * 0.5f));
 #endif
 								if (meshesSP.isExpanded)
-                                {
-                                    for (int j = 0; j < curWindow.textureAtlas.selectedTextureQuad.modelGroups[i].meshes.Count; j++)
-                                    {
-                                        using (new GUILayout.HorizontalScope())
-                                        {
-                                            curWindow.textureAtlas.selectedTextureQuad.modelGroups[i].meshes[j] = (Mesh)EditorGUILayout.ObjectField(curWindow.textureAtlas.selectedTextureQuad.modelGroups[i].meshes[j], typeof(Mesh), false);
-                                            if (GUILayout.Button("-", EditorStyles.miniButton, GUILayout.ExpandWidth(true)))
-                                            {
-                                                curWindow.textureAtlas.selectedTextureQuad.modelGroups[i].meshes.RemoveAt(j);
-                                                break;
-                                            }
-                                        }
-                                    }
-                                }
+								{
+									for (int j = 0; j < curWindow.textureAtlas.selectedTextureQuad.modelGroups[i].meshes.Count; j++)
+									{
+										using (new GUILayout.HorizontalScope())
+										{
+											curWindow.textureAtlas.selectedTextureQuad.modelGroups[i].meshes[j] = (Mesh)EditorGUILayout.ObjectField(curWindow.textureAtlas.selectedTextureQuad.modelGroups[i].meshes[j], typeof(Mesh), false);
+											if (GUILayout.Button("-", EditorStyles.miniButton, GUILayout.ExpandWidth(true)))
+											{
+												curWindow.textureAtlas.selectedTextureQuad.modelGroups[i].meshes.RemoveAt(j);
+												break;
+											}
+										}
+									}
+								}
 
-                                if (GUILayout.Button("+", EditorStyles.miniButton))
-                                {
-                                    curWindow.textureAtlas.selectedTextureQuad.modelGroups[i].meshes.Add(null);
-                                }
+								if (GUILayout.Button("+", EditorStyles.miniButton))
+								{
+									curWindow.textureAtlas.selectedTextureQuad.modelGroups[i].meshes.Add(null);
+								}
 							}
 						}
 
-                        if (GUILayout.Button("+", EditorStyles.miniButton, GUILayout.ExpandWidth(true)))
-                        {
-                            curWindow.textureAtlas.selectedTextureQuad.modelGroups.Add(new MA_ModelGroup() { name = MA_StringUtils.RandomAlphabetString(6) });
-                        }
-                    }
+						if (GUILayout.Button("+", EditorStyles.miniButton, GUILayout.ExpandWidth(true)))
+						{
+							curWindow.textureAtlas.selectedTextureQuad.modelGroups.Add(new MA_ModelGroup() { name = MA_StringUtils.RandomAlphabetString(6) });
+						}
+					}
 					else
 					{
 						curWindow.textureAtlas.selectedTextureQuad.modelGroups = new List<MA_ModelGroup>();
