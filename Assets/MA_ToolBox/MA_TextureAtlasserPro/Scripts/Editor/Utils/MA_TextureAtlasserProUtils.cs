@@ -521,6 +521,13 @@ namespace MA_TextureAtlasserPro
                     name = atlas.name + "_" + atlas.textureGroupRegistration[i].name
                 };
 
+                //A new Texture2D is uninitialised, and MA_Combine2D only writes inside each quad's
+                //guiRect, so every texel no quad covers keeps whatever was left in the buffer. That
+                //garbage is opaque enough to survive an alpha cutoff and bleeds into the quads
+                //through the mip chain, so clear the atlas to transparent black before combining.
+                newTexture.SetPixels32(new Color32[newTexture.width * newTexture.height]);
+                newTexture.Apply();
+
                 foreach (MA_TextureAtlasserProQuad q in atlas.textureQuads)
                 {
                     if (q.textureGroups != null && q.textureGroups[i].texture != null)
