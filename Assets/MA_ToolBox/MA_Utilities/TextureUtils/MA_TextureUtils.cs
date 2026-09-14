@@ -122,7 +122,11 @@ namespace MA_Texture
 
 			}
 
+#if UNITY_2021_2_OR_NEWER
+			texture.Reinitialize(newWidth, newHeight);
+#else
 			texture.Resize(newWidth, newHeight);
+#endif
 			texture.SetPixels(newColors);
 			texture.Apply();
 
